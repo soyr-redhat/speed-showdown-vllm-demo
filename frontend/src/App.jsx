@@ -90,30 +90,37 @@ function App() {
             </div>
             <div className="text-right">
               <div className="text-sm text-gray-400">Powered by</div>
-              <div className="text-redhat-red font-bold">Red Hat OpenShift</div>
+              <div className="text-redhat-red font-bold">Red Hat OpenShift AI</div>
             </div>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {raceState === 'idle' && (
+        {/* Race Track - Always visible */}
+        <RaceTrack
+          standardTokens={standardTokens}
+          vllmTokens={vllmTokens}
+          raceState={raceState}
+        />
+
+        {/* Prompt Input - Always visible below */}
+        <div className="mt-8">
           <PromptSelector
             selectedPrompt={selectedPrompt}
             setSelectedPrompt={setSelectedPrompt}
             onStart={startRace}
+            isRacing={raceState === 'racing'}
           />
-        )}
+        </div>
 
-        {raceState === 'racing' && (
-          <RaceTrack
-            standardTokens={standardTokens}
-            vllmTokens={vllmTokens}
-          />
-        )}
-
+        {/* Results Modal/Overlay */}
         {raceState === 'finished' && results && (
-          <Results results={results} onReset={reset} />
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+            <div className="max-w-4xl w-full">
+              <Results results={results} onReset={reset} />
+            </div>
+          </div>
         )}
       </main>
 

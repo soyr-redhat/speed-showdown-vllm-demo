@@ -14,21 +14,23 @@ class InferenceEngine:
         print(f"VLLM_URL: {os.getenv('VLLM_URL')}")
         print(f"VLLM_API_KEY set: {bool(vllm_api_key)}")
         print(f"STANDARD_LLM_URL: {os.getenv('STANDARD_LLM_URL')}")
-        print(f"MODEL_NAME: {os.getenv('MODEL_NAME')}")
+        print(f"VLLM_MODEL: {os.getenv('VLLM_MODEL')}")
+        print(f"STANDARD_MODEL: {os.getenv('STANDARD_MODEL')}")
 
         # vLLM endpoint (optimized)
         self.vllm_client = AsyncOpenAI(
-            api_key=vllm_api_key,
+            api_key=vllm_api_key or "EMPTY",
             base_url=os.getenv("VLLM_URL", "http://localhost:8000/v1")
         )
 
         # Standard endpoint (for comparison)
         self.standard_client = AsyncOpenAI(
-            api_key=standard_api_key,
+            api_key=standard_api_key or "EMPTY",
             base_url=os.getenv("STANDARD_LLM_URL", "https://api.openai.com/v1")
         )
 
-        self.model_name = os.getenv("MODEL_NAME", "gpt-3.5-turbo")
+        self.vllm_model = os.getenv("VLLM_MODEL", "gpt-3.5-turbo")
+        self.standard_model = os.getenv("STANDARD_MODEL", "gpt-3.5-turbo")
 
     async def stream_tokens(
         self,
@@ -39,6 +41,7 @@ class InferenceEngine:
         """Stream tokens from either vLLM or standard endpoint"""
 
         client = self.vllm_client if racer == "vllm" else self.standard_client
+        model = self.vllm_model if racer == "vllm" else self.standard_model
 
         # For standard inference, add artificial delay to simulate slower processing
         # In real world, vLLM would naturally be faster due to optimizations
@@ -48,9 +51,9 @@ class InferenceEngine:
         token_count = 0
 
         try:
-            print(f"[{racer}] Starting inference with model: {self.model_name}, prompt length: {len(prompt)}")
+            print(f"[{racer}] Starting inference with model: {model}, prompt length: {len(prompt)}")
             stream = await client.chat.completions.create(
-                model=self.model_name,
+                model=model,
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=max_tokens,
                 stream=True,
@@ -96,6 +99,7 @@ class InferenceEngine:
         """Generate complete response and return text, time, tokens/sec"""
 
         client = self.vllm_client if racer == "vllm" else self.standard_client
+        model = self.vllm_model if racer == "vllm" else self.standard_model
         delay_per_token = 0.0 if racer == "vllm" else 0.05
 
         start_time = time.time()
@@ -104,7 +108,7 @@ class InferenceEngine:
 
         try:
             stream = await client.chat.completions.create(
-                model=self.model_name,
+                model=model,
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=max_tokens,
                 stream=True,

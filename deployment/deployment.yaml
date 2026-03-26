@@ -46,11 +46,16 @@ spec:
             secretKeyRef:
               name: speed-showdown-secrets
               key: standard-api-key
-        - name: MODEL_NAME
+        - name: VLLM_MODEL
           valueFrom:
             configMapKeyRef:
               name: speed-showdown-config
-              key: model-name
+              key: vllm-model
+        - name: STANDARD_MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: speed-showdown-config
+              key: standard-model
         resources:
           requests:
             memory: "256Mi"

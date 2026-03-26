@@ -53,29 +53,41 @@ function App() {
         setRaceState('finished')
         ws.close()
 
-        // Calculate results
-        const standardTime = standardTokens.length > 0 ?
-          standardTokens[standardTokens.length - 1].timestamp - standardTokens[0].timestamp : 0
-        const vllmTime = vllmTokens.length > 0 ?
-          vllmTokens[vllmTokens.length - 1].timestamp - vllmTokens[0].timestamp : 0
+        // Use a small delay to ensure state updates have completed
+        setTimeout(() => {
+          setStandardTokens(stdTokens => {
+            setVllmTokens(vTokens => {
+              // Calculate results using current state
+              const standardTime = stdTokens.length > 0 ?
+                stdTokens[stdTokens.length - 1].timestamp - stdTokens[0].timestamp : Infinity
+              const vllmTime = vTokens.length > 0 ?
+                vTokens[vTokens.length - 1].timestamp - vTokens[0].timestamp : Infinity
 
-        const raceWinner = vllmTime < standardTime ? 'vllm' : 'standard'
-        setWinner(raceWinner)
+              console.log('Race times:', { standardTime, vllmTime, stdCount: stdTokens.length, vllmCount: vTokens.length })
 
-        // Update win counts
-        setWins(prev => ({
-          ...prev,
-          [raceWinner]: prev[raceWinner] + 1
-        }))
+              const raceWinner = vllmTime < standardTime ? 'vllm' : 'standard'
+              setWinner(raceWinner)
 
-        setResults({
-          winner: raceWinner === 'vllm' ? 'vLLM' : 'Standard',
-          speedup: standardTime / vllmTime || 1,
-          standardTime,
-          vllmTime,
-          standardTPS: standardTokens[standardTokens.length - 1]?.tokens_per_sec || 0,
-          vllmTPS: vllmTokens[vllmTokens.length - 1]?.tokens_per_sec || 0
-        })
+              // Update win counts
+              setWins(prev => ({
+                ...prev,
+                [raceWinner]: prev[raceWinner] + 1
+              }))
+
+              setResults({
+                winner: raceWinner === 'vllm' ? 'vLLM' : 'Standard',
+                speedup: standardTime / vllmTime || 1,
+                standardTime,
+                vllmTime,
+                standardTPS: stdTokens[stdTokens.length - 1]?.tokens_per_sec || 0,
+                vllmTPS: vTokens[vTokens.length - 1]?.tokens_per_sec || 0
+              })
+
+              return vTokens
+            })
+            return stdTokens
+          })
+        }, 100)
       }
     }
 

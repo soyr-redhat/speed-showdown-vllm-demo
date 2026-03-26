@@ -22,7 +22,7 @@ function PromptSelector({ selectedPrompt, setSelectedPrompt, onStart, isRacing }
                   key={index}
                   onClick={() => setSelectedPrompt(prompt)}
                   disabled={isRacing}
-                  className="p-2 rounded-lg text-left text-xs bg-redhat-dark-surface/80 hover:bg-redhat-red/20 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 rounded-lg text-left text-xs bg-redhat-dark-elevated border border-redhat-grid-line hover:border-redhat-red hover:bg-redhat-red/10 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {prompt}
                 </button>

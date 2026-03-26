@@ -109,20 +109,17 @@ function RaceTrack({ standardTokens, vllmTokens, raceState, winner, wins }) {
           </div>
         </div>
 
-        {/* Overall Score */}
+        {/* Score Counter */}
         <div className="mt-6 flex justify-center">
-          <div className="bg-redhat-dark-elevated rounded-lg p-4 inline-flex items-center gap-6">
-            <div className="text-sm text-gray-400">Overall Score</div>
-            <div className="flex items-center gap-4">
-              <div className="text-center">
-                <div className="text-green-400 font-bold text-2xl">{wins.vllm}</div>
-                <div className="text-xs text-gray-400">vLLM</div>
-              </div>
-              <div className="text-gray-600 font-bold text-xl">-</div>
-              <div className="text-center">
-                <div className="text-orange-400 font-bold text-2xl">{wins.standard}</div>
-                <div className="text-xs text-gray-400">Standard</div>
-              </div>
+          <div className="bg-redhat-dark-elevated rounded-lg p-4 inline-flex items-center gap-4">
+            <div className="text-center">
+              <div className="text-green-400 font-bold text-2xl">{wins.vllm}</div>
+              <div className="text-xs text-gray-400">vLLM</div>
+            </div>
+            <div className="text-gray-600 font-bold text-xl">-</div>
+            <div className="text-center">
+              <div className="text-orange-400 font-bold text-2xl">{wins.standard}</div>
+              <div className="text-xs text-gray-400">Standard</div>
             </div>
           </div>
         </div>

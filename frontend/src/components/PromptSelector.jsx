@@ -11,7 +11,7 @@ const SAMPLE_PROMPTS = [
 function PromptSelector({ selectedPrompt, setSelectedPrompt, onStart, isRacing }) {
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="bg-redhat-dark-surface rounded-lg p-6">
+      <div className="bg-redhat-dark-surface rounded-lg p-4">
         <div className="grid grid-cols-3 gap-6">
           {/* Left: Sample Prompts */}
           <div>
@@ -37,7 +37,7 @@ function PromptSelector({ selectedPrompt, setSelectedPrompt, onStart, isRacing }
               value={selectedPrompt}
               onChange={(e) => setSelectedPrompt(e.target.value)}
               disabled={isRacing}
-              className="w-full bg-redhat-dark-elevated text-white px-4 py-3 rounded h-40 mb-3 disabled:opacity-50"
+              className="w-full bg-redhat-dark-elevated text-white px-4 py-3 rounded h-32 mb-3 disabled:opacity-50"
               placeholder="Type your prompt here or select a sample from the left..."
             />
 

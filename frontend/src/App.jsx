@@ -116,12 +116,30 @@ function App() {
       <div className="grid-background"></div>
 
       <header className="bg-redhat-dark-surface border-b border-redhat-grid-line relative z-10">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4">
+          <div className="grid grid-cols-3 items-center gap-4">
+            {/* Left: Title */}
             <div>
               <h1 className="text-3xl font-display font-bold text-redhat-red">Speed Showdown</h1>
               <p className="text-redhat-text-secondary mt-1 font-mono text-xs uppercase tracking-wider">Pillar 02 / Inference Performance Demo</p>
             </div>
+
+            {/* Center: Score Counter */}
+            <div className="flex justify-center">
+              <div className="bg-redhat-dark-elevated rounded-lg px-6 py-3 flex items-center gap-4 border border-redhat-grid-line">
+                <div className="text-center">
+                  <div className="text-green-400 font-bold text-2xl font-mono">{wins.vllm}</div>
+                  <div className="text-xs text-gray-400">vLLM</div>
+                </div>
+                <div className="text-gray-600 font-bold text-xl">-</div>
+                <div className="text-center">
+                  <div className="text-orange-400 font-bold text-2xl font-mono">{wins.standard}</div>
+                  <div className="text-xs text-gray-400">Standard</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Powered by */}
             <div className="text-right">
               <div className="text-sm font-mono text-redhat-text-tertiary uppercase tracking-wider">Powered by</div>
               <div className="text-redhat-red font-display font-bold text-lg">Red Hat OpenShift AI</div>
@@ -130,7 +148,7 @@ function App() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 relative z-10">
+      <main className="container mx-auto px-4 py-4 relative z-10">
         {/* Race Track - Always visible */}
         <RaceTrack
           standardTokens={standardTokens}
@@ -141,7 +159,7 @@ function App() {
         />
 
         {/* Prompt Input - Always visible below */}
-        <div className="mt-8">
+        <div className="mt-4">
           <PromptSelector
             selectedPrompt={selectedPrompt}
             setSelectedPrompt={setSelectedPrompt}
@@ -151,7 +169,7 @@ function App() {
         </div>
       </main>
 
-      <footer className="bg-redhat-dark-surface border-t border-redhat-grid-line mt-12 py-6 relative z-10">
+      <footer className="bg-redhat-dark-surface border-t border-redhat-grid-line mt-4 py-4 relative z-10">
         <div className="container mx-auto px-4 text-center font-mono text-redhat-text-tertiary text-xs uppercase tracking-wider">
           <p>Built with open source technologies | Red Hat AI - Four Pillars Demo</p>
         </div>

@@ -24,7 +24,7 @@ function RaceTrack({ standardTokens, vllmTokens, raceState, winner, wins }) {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="bg-redhat-dark-surface rounded-lg p-6">
+      <div className="bg-redhat-dark-surface rounded-lg p-4">
 
         {/* Side-by-side racers */}
         <div className="grid grid-cols-2 gap-6">
@@ -54,7 +54,7 @@ function RaceTrack({ standardTokens, vllmTokens, raceState, winner, wins }) {
             </div>
 
             {/* Token output */}
-            <div className={`bg-redhat-dark-elevated rounded p-3 h-64 overflow-y-auto text-sm font-mono border-2 transition-all ${
+            <div className={`bg-redhat-dark-elevated rounded p-3 h-48 overflow-y-auto text-sm font-mono border-2 transition-all ${
               winner === 'vllm'
                 ? 'border-yellow-400 animate-pulse shadow-lg shadow-yellow-400/50'
                 : 'border-transparent'
@@ -94,7 +94,7 @@ function RaceTrack({ standardTokens, vllmTokens, raceState, winner, wins }) {
             </div>
 
             {/* Token output */}
-            <div className={`bg-redhat-dark-elevated rounded p-3 h-64 overflow-y-auto text-sm font-mono border-2 transition-all ${
+            <div className={`bg-redhat-dark-elevated rounded p-3 h-48 overflow-y-auto text-sm font-mono border-2 transition-all ${
               winner === 'standard'
                 ? 'border-yellow-400 animate-pulse shadow-lg shadow-yellow-400/50'
                 : 'border-transparent'
@@ -105,21 +105,6 @@ function RaceTrack({ standardTokens, vllmTokens, raceState, winner, wins }) {
               {standardTokens.length === 0 && (
                 <span className="text-gray-500">Waiting for input...</span>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* Score Counter */}
-        <div className="mt-6 flex justify-center">
-          <div className="bg-redhat-dark-elevated rounded-lg p-4 inline-flex items-center gap-4">
-            <div className="text-center">
-              <div className="text-green-400 font-bold text-2xl">{wins.vllm}</div>
-              <div className="text-xs text-gray-400">vLLM</div>
-            </div>
-            <div className="text-gray-600 font-bold text-xl">-</div>
-            <div className="text-center">
-              <div className="text-orange-400 font-bold text-2xl">{wins.standard}</div>
-              <div className="text-xs text-gray-400">Standard</div>
             </div>
           </div>
         </div>

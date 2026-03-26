@@ -11,7 +11,7 @@ spec:
   source:
     type: Git
     git:
-      uri: https://github.com/soyr-redhat/vllm-speed-showdown-demo.git
+      uri: https://github.com/soyr-redhat/speed-showdown-vllm-demo.git
     contextDir: backend
   strategy:
     type: Docker
@@ -35,7 +35,7 @@ spec:
   source:
     type: Git
     git:
-      uri: https://github.com/soyr-redhat/vllm-speed-showdown-demo.git
+      uri: https://github.com/soyr-redhat/speed-showdown-vllm-demo.git
     contextDir: frontend
   strategy:
     type: Docker

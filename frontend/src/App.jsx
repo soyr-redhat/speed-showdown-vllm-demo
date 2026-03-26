@@ -111,23 +111,27 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-redhat-dark text-white">
-      <header className="bg-black border-b border-redhat-red">
+    <div className="min-h-screen bg-redhat-dark-bg text-white">
+      {/* Red Hat Brand Visual Elements */}
+      <div className="grid-background"></div>
+      <div className="scan-line"></div>
+
+      <header className="bg-redhat-dark-surface border-b border-redhat-grid-line relative z-10">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-redhat-red">Speed Showdown</h1>
-              <p className="text-gray-400 mt-1">vLLM Inference Demo - Four Pillars of AI</p>
+              <h1 className="text-3xl font-display font-bold text-redhat-red">Speed Showdown</h1>
+              <p className="text-redhat-text-secondary mt-1 font-mono text-xs uppercase tracking-wider">Pillar 02 / Inference Performance Demo</p>
             </div>
             <div className="text-right">
-              <div className="text-sm text-gray-400">Powered by</div>
-              <div className="text-redhat-red font-bold">Red Hat OpenShift AI</div>
+              <div className="text-sm font-mono text-redhat-text-tertiary uppercase tracking-wider">Powered by</div>
+              <div className="text-redhat-red font-display font-bold text-lg">Red Hat OpenShift AI</div>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         {/* Race Track - Always visible */}
         <RaceTrack
           standardTokens={standardTokens}
@@ -148,8 +152,8 @@ function App() {
         </div>
       </main>
 
-      <footer className="bg-black border-t border-gray-800 mt-12 py-6">
-        <div className="container mx-auto px-4 text-center text-gray-400 text-sm">
+      <footer className="bg-redhat-dark-surface border-t border-redhat-grid-line mt-12 py-6 relative z-10">
+        <div className="container mx-auto px-4 text-center font-mono text-redhat-text-tertiary text-xs uppercase tracking-wider">
           <p>Built with open source technologies | Red Hat AI - Four Pillars Demo</p>
         </div>
       </footer>

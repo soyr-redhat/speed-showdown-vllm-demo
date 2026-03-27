@@ -88,16 +88,22 @@ function App() {
                 const quantizedTime = qTokens.length > 0 ?
                   qTokens[qTokens.length - 1].timestamp - qTokens[0].timestamp : Infinity
 
-                console.log('Race times:', {
+                // Get tokens per second for each racer
+                const standardTPS = stdTokens[stdTokens.length - 1]?.tokens_per_sec || 0
+                const optimizedTPS = optTokens[optTokens.length - 1]?.tokens_per_sec || 0
+                const quantizedTPS = qTokens[qTokens.length - 1]?.tokens_per_sec || 0
+
+                console.log('Race results:', {
                   standardTime, optimizedTime, quantizedTime,
+                  standardTPS, optimizedTPS, quantizedTPS,
                   stdCount: stdTokens.length,
                   optCount: optTokens.length,
                   qCount: qTokens.length
                 })
 
-                // Find the winner (fastest time)
-                const times = { standard: standardTime, optimized: optimizedTime, quantized: quantizedTime }
-                const raceWinner = Object.keys(times).reduce((a, b) => times[a] < times[b] ? a : b)
+                // Find the winner (highest tokens per second)
+                const tpsScores = { standard: standardTPS, optimized: optimizedTPS, quantized: quantizedTPS }
+                const raceWinner = Object.keys(tpsScores).reduce((a, b) => tpsScores[a] > tpsScores[b] ? a : b)
                 setWinner(raceWinner)
 
                 // Update win counts on backend (persistent across all users)
@@ -113,9 +119,9 @@ function App() {
                   quantizedTime,
                   optimizedSpeedup: standardTime / optimizedTime || 1,
                   quantizedSpeedup: standardTime / quantizedTime || 1,
-                  standardTPS: stdTokens[stdTokens.length - 1]?.tokens_per_sec || 0,
-                  optimizedTPS: optTokens[optTokens.length - 1]?.tokens_per_sec || 0,
-                  quantizedTPS: qTokens[qTokens.length - 1]?.tokens_per_sec || 0
+                  standardTPS,
+                  optimizedTPS,
+                  quantizedTPS
                 })
 
                 return qTokens

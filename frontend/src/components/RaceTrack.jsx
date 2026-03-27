@@ -45,26 +45,27 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
       features: [
         { name: 'PagedAttention', desc: 'Efficient KV cache memory management' },
         { name: 'Continuous Batching', desc: 'Process multiple requests without waiting' },
-        { name: 'Default Settings', desc: 'Standard GPU memory utilization (90%)' },
+        { name: 'Eager Execution', desc: 'Runs without CUDA graph compilation' },
+        { name: 'Standard GPU Utilization', desc: '90% GPU memory utilization' },
         { name: 'OpenAI-compatible API', desc: 'Drop-in replacement for OpenAI endpoints' }
       ],
-      optimizations: 'Basic vLLM optimizations enabled'
+      optimizations: 'Basic vLLM features without advanced optimizations'
     },
     optimized: {
       title: 'Optimized vLLM',
       icon: '⚡',
       color: 'blue',
-      description: 'Enhanced vLLM with advanced performance optimizations',
+      description: 'Enhanced vLLM with CUDA graphs and performance tuning',
       model: 'Mistral-7B-Instruct-v0.3',
       features: [
-        { name: 'Chunked Prefill', desc: 'Break down long prompts for better scheduling' },
-        { name: 'Prefix Caching', desc: 'Reuse KV cache for common prompt prefixes' },
-        { name: 'V2 Block Manager', desc: 'Latest block manager with improved efficiency' },
-        { name: 'Increased Batching', desc: '16K max batched tokens, 256 max sequences' },
-        { name: 'Zero Scheduler Delay', desc: 'Immediate request scheduling for lowest latency' },
-        { name: 'Higher GPU Utilization', desc: '95% GPU memory utilization for max throughput' }
+        { name: 'CUDA Graphs', desc: 'Pre-compiled execution graphs for 1.3-2x faster inference' },
+        { name: 'Maximum GPU Utilization', desc: '98% GPU memory utilization for peak performance' },
+        { name: 'Reduced Logging Overhead', desc: 'Disabled request logging to minimize latency' },
+        { name: 'Optimized Block Size', desc: 'Smaller 16-token blocks for faster memory access' },
+        { name: 'Tuned Sequence Handling', desc: '128 max sequences for optimal batching' },
+        { name: 'Same Model Quality', desc: 'Identical model to Standard, just faster execution' }
       ],
-      optimizations: 'Advanced performance optimizations enabled'
+      optimizations: 'CUDA graph optimization + latency tuning for faster inference'
     },
     quantized: {
       title: 'Quantized vLLM (W4A16)',

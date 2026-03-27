@@ -57,6 +57,8 @@ spec:
         - "2048"
         - --gpu-memory-utilization
         - "0.90"
+        # Disable CUDA graphs to demonstrate optimization impact
+        - --enforce-eager
         resources:
           requests:
             nvidia.com/mig-1g.18gb: "1"

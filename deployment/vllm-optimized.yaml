@@ -56,14 +56,13 @@ spec:
         - --max-model-len
         - "2048"
         - --gpu-memory-utilization
-        - "0.95"
-        # Modern optimization flags
-        - --enable-chunked-prefill
-        - --enable-prefix-caching
-        - --max-num-batched-tokens
-        - "16384"
+        - "0.98"
+        # Optimizations for faster single-request latency
+        - --disable-log-requests
         - --max-num-seqs
-        - "256"
+        - "128"
+        - --block-size
+        - "16"
         # Trust remote code for model flexibility
         - --trust-remote-code
         resources:

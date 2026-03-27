@@ -4,4 +4,4 @@ An interactive racing game that demonstrates the performance benefits of vLLM op
 
 ## Concept
 
-Users submit prompts and watch three "racers" generate tokens in real-time:
+Users submit prompts and watch three "racers" generate tokens in real-time

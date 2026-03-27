@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-quantized
+  namespace: speed-showdown
+  labels:
+    app: vllm-quantized
+    vllm-type: quantized
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm-quantized
+  template:
+    metadata:
+      labels:
+        app: vllm-quantized
+        vllm-type: quantized
+    spec:
+      containers:
+      - name: vllm
+        image: vllm/vllm-openai:latest
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: HUGGING_FACE_HUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: speed-showdown-secrets
+              key: hf-token
+              optional: true
+        args:
+        - --model
+        - RedHatAI/Mistral-Small-3.1-24B-Instruct-2503-FP8-dynamic
+        - --host
+        - "0.0.0.0"
+        - --port
+        - "8000"
+        - --max-model-len
+        - "8192"
+        - --gpu-memory-utilization
+        - "0.95"
+        # Optimization flags
+        - --enable-chunked-prefill
+        - --enable-prefix-caching
+        - --max-num-batched-tokens
+        - "16384"
+        - --max-num-seqs
+        - "256"
+        - --disable-log-requests
+        # Quantization
+        - --quantization
+        - fp8
+        resources:
+          requests:
+            memory: "18Gi"
+            cpu: "4000m"
+          limits:
+            memory: "18Gi"
+            cpu: "8000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm-quantized
+  namespace: speed-showdown
+  labels:
+    app: vllm-quantized
+spec:
+  selector:
+    app: vllm-quantized
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  type: ClusterIP

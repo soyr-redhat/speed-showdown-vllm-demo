@@ -9,10 +9,11 @@ function App() {
   const [raceState, setRaceState] = useState('idle') // idle, racing, finished
   const [selectedPrompt, setSelectedPrompt] = useState('')
   const [standardTokens, setStandardTokens] = useState([])
-  const [vllmTokens, setVllmTokens] = useState([])
+  const [optimizedTokens, setOptimizedTokens] = useState([])
+  const [quantizedTokens, setQuantizedTokens] = useState([])
   const [results, setResults] = useState(null)
   const [winner, setWinner] = useState(null)
-  const [wins, setWins] = useState({ vllm: 0, standard: 0 })
+  const [wins, setWins] = useState({ standard: 0, optimized: 0, quantized: 0 })
 
   const startRace = () => {
     if (!selectedPrompt.trim()) {
@@ -22,7 +23,8 @@ function App() {
 
     setRaceState('racing')
     setStandardTokens([])
-    setVllmTokens([])
+    setOptimizedTokens([])
+    setQuantizedTokens([])
     setResults(null)
     setWinner(null)
 
@@ -46,8 +48,10 @@ function App() {
         const token = message.data
         if (token.racer === 'standard') {
           setStandardTokens(prev => [...prev, token])
+        } else if (token.racer === 'optimized') {
+          setOptimizedTokens(prev => [...prev, token])
         } else {
-          setVllmTokens(prev => [...prev, token])
+          setQuantizedTokens(prev => [...prev, token])
         }
       } else if (message.type === 'race_complete') {
         setRaceState('finished')
@@ -56,34 +60,49 @@ function App() {
         // Use a small delay to ensure state updates have completed
         setTimeout(() => {
           setStandardTokens(stdTokens => {
-            setVllmTokens(vTokens => {
-              // Calculate results using current state
-              const standardTime = stdTokens.length > 0 ?
-                stdTokens[stdTokens.length - 1].timestamp - stdTokens[0].timestamp : Infinity
-              const vllmTime = vTokens.length > 0 ?
-                vTokens[vTokens.length - 1].timestamp - vTokens[0].timestamp : Infinity
+            setOptimizedTokens(optTokens => {
+              setQuantizedTokens(qTokens => {
+                // Calculate results using current state
+                const standardTime = stdTokens.length > 0 ?
+                  stdTokens[stdTokens.length - 1].timestamp - stdTokens[0].timestamp : Infinity
+                const optimizedTime = optTokens.length > 0 ?
+                  optTokens[optTokens.length - 1].timestamp - optTokens[0].timestamp : Infinity
+                const quantizedTime = qTokens.length > 0 ?
+                  qTokens[qTokens.length - 1].timestamp - qTokens[0].timestamp : Infinity
 
-              console.log('Race times:', { standardTime, vllmTime, stdCount: stdTokens.length, vllmCount: vTokens.length })
+                console.log('Race times:', {
+                  standardTime, optimizedTime, quantizedTime,
+                  stdCount: stdTokens.length,
+                  optCount: optTokens.length,
+                  qCount: qTokens.length
+                })
 
-              const raceWinner = vllmTime < standardTime ? 'vllm' : 'standard'
-              setWinner(raceWinner)
+                // Find the winner (fastest time)
+                const times = { standard: standardTime, optimized: optimizedTime, quantized: quantizedTime }
+                const raceWinner = Object.keys(times).reduce((a, b) => times[a] < times[b] ? a : b)
+                setWinner(raceWinner)
 
-              // Update win counts
-              setWins(prev => ({
-                ...prev,
-                [raceWinner]: prev[raceWinner] + 1
-              }))
+                // Update win counts
+                setWins(prev => ({
+                  ...prev,
+                  [raceWinner]: prev[raceWinner] + 1
+                }))
 
-              setResults({
-                winner: raceWinner === 'vllm' ? 'vLLM' : 'Standard',
-                speedup: standardTime / vllmTime || 1,
-                standardTime,
-                vllmTime,
-                standardTPS: stdTokens[stdTokens.length - 1]?.tokens_per_sec || 0,
-                vllmTPS: vTokens[vTokens.length - 1]?.tokens_per_sec || 0
+                setResults({
+                  winner: raceWinner.charAt(0).toUpperCase() + raceWinner.slice(1),
+                  standardTime,
+                  optimizedTime,
+                  quantizedTime,
+                  optimizedSpeedup: standardTime / optimizedTime || 1,
+                  quantizedSpeedup: standardTime / quantizedTime || 1,
+                  standardTPS: stdTokens[stdTokens.length - 1]?.tokens_per_sec || 0,
+                  optimizedTPS: optTokens[optTokens.length - 1]?.tokens_per_sec || 0,
+                  quantizedTPS: qTokens[qTokens.length - 1]?.tokens_per_sec || 0
+                })
+
+                return qTokens
               })
-
-              return vTokens
+              return optTokens
             })
             return stdTokens
           })
@@ -105,7 +124,8 @@ function App() {
   const reset = () => {
     setRaceState('idle')
     setStandardTokens([])
-    setVllmTokens([])
+    setOptimizedTokens([])
+    setQuantizedTokens([])
     setResults(null)
     setWinner(null)
   }
@@ -126,15 +146,20 @@ function App() {
 
             {/* Center: Score Counter */}
             <div className="flex justify-center">
-              <div className="bg-redhat-dark-elevated rounded-lg px-6 py-3 flex items-center gap-4 border border-redhat-grid-line">
-                <div className="text-center">
-                  <div className="text-green-400 font-bold text-2xl font-mono">{wins.vllm}</div>
-                  <div className="text-xs text-gray-400">vLLM</div>
-                </div>
-                <div className="text-gray-600 font-bold text-xl">-</div>
+              <div className="bg-redhat-dark-elevated rounded-lg px-6 py-3 flex items-center gap-3 border border-redhat-grid-line">
                 <div className="text-center">
                   <div className="text-orange-400 font-bold text-2xl font-mono">{wins.standard}</div>
                   <div className="text-xs text-gray-400">Standard</div>
+                </div>
+                <div className="text-gray-600 font-bold text-xl">-</div>
+                <div className="text-center">
+                  <div className="text-blue-400 font-bold text-2xl font-mono">{wins.optimized}</div>
+                  <div className="text-xs text-gray-400">Optimized</div>
+                </div>
+                <div className="text-gray-600 font-bold text-xl">-</div>
+                <div className="text-center">
+                  <div className="text-green-400 font-bold text-2xl font-mono">{wins.quantized}</div>
+                  <div className="text-xs text-gray-400">Quantized</div>
                 </div>
               </div>
             </div>
@@ -152,7 +177,8 @@ function App() {
         {/* Race Track - Always visible */}
         <RaceTrack
           standardTokens={standardTokens}
-          vllmTokens={vllmTokens}
+          optimizedTokens={optimizedTokens}
+          quantizedTokens={quantizedTokens}
           raceState={raceState}
           winner={winner}
           wins={wins}

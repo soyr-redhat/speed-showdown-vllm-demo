@@ -25,37 +25,42 @@ spec:
         - containerPort: 8000
           name: http
         env:
-        - name: VLLM_URL
+        - name: VLLM_STANDARD_URL
           valueFrom:
             configMapKeyRef:
               name: speed-showdown-config
-              key: vllm-url
+              key: vllm-standard-url
+        - name: VLLM_OPTIMIZED_URL
+          valueFrom:
+            configMapKeyRef:
+              name: speed-showdown-config
+              key: vllm-optimized-url
+        - name: VLLM_QUANTIZED_URL
+          valueFrom:
+            configMapKeyRef:
+              name: speed-showdown-config
+              key: vllm-quantized-url
         - name: VLLM_API_KEY
           valueFrom:
             secretKeyRef:
               name: speed-showdown-secrets
               key: vllm-api-key
               optional: true
-        - name: STANDARD_LLM_URL
+        - name: VLLM_STANDARD_MODEL
           valueFrom:
             configMapKeyRef:
               name: speed-showdown-config
-              key: standard-llm-url
-        - name: STANDARD_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: speed-showdown-secrets
-              key: standard-api-key
-        - name: VLLM_MODEL
+              key: vllm-standard-model
+        - name: VLLM_OPTIMIZED_MODEL
           valueFrom:
             configMapKeyRef:
               name: speed-showdown-config
-              key: vllm-model
-        - name: STANDARD_MODEL
+              key: vllm-optimized-model
+        - name: VLLM_QUANTIZED_MODEL
           valueFrom:
             configMapKeyRef:
               name: speed-showdown-config
-              key: standard-model
+              key: vllm-quantized-model
         resources:
           requests:
             memory: "256Mi"

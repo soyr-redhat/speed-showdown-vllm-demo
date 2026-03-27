@@ -7,30 +7,37 @@ from models import TokenEvent
 
 class InferenceEngine:
     def __init__(self):
-        vllm_api_key = os.getenv("VLLM_API_KEY", "")
-        standard_api_key = os.getenv("STANDARD_API_KEY", "")
+        api_key = os.getenv("VLLM_API_KEY", "")
 
-        print(f"Initializing InferenceEngine")
-        print(f"VLLM_URL: {os.getenv('VLLM_URL')}")
-        print(f"VLLM_API_KEY set: {bool(vllm_api_key)}")
-        print(f"STANDARD_LLM_URL: {os.getenv('STANDARD_LLM_URL')}")
-        print(f"VLLM_MODEL: {os.getenv('VLLM_MODEL')}")
-        print(f"STANDARD_MODEL: {os.getenv('STANDARD_MODEL')}")
+        print(f"Initializing InferenceEngine with 3 vLLM endpoints")
+        print(f"VLLM_STANDARD_URL: {os.getenv('VLLM_STANDARD_URL')}")
+        print(f"VLLM_OPTIMIZED_URL: {os.getenv('VLLM_OPTIMIZED_URL')}")
+        print(f"VLLM_QUANTIZED_URL: {os.getenv('VLLM_QUANTIZED_URL')}")
+        print(f"VLLM_STANDARD_MODEL: {os.getenv('VLLM_STANDARD_MODEL')}")
+        print(f"VLLM_OPTIMIZED_MODEL: {os.getenv('VLLM_OPTIMIZED_MODEL')}")
+        print(f"VLLM_QUANTIZED_MODEL: {os.getenv('VLLM_QUANTIZED_MODEL')}")
 
-        # vLLM endpoint (optimized)
-        self.vllm_client = AsyncOpenAI(
-            api_key=vllm_api_key or "EMPTY",
-            base_url=os.getenv("VLLM_URL", "http://localhost:8000/v1")
-        )
-
-        # Standard endpoint (for comparison)
+        # vLLM Standard endpoint (baseline)
         self.standard_client = AsyncOpenAI(
-            api_key=standard_api_key or "EMPTY",
-            base_url=os.getenv("STANDARD_LLM_URL", "https://api.openai.com/v1")
+            api_key=api_key or "EMPTY",
+            base_url=os.getenv("VLLM_STANDARD_URL", "http://localhost:8001/v1")
         )
 
-        self.vllm_model = os.getenv("VLLM_MODEL", "gpt-3.5-turbo")
-        self.standard_model = os.getenv("STANDARD_MODEL", "gpt-3.5-turbo")
+        # vLLM Optimized endpoint (with optimizations)
+        self.optimized_client = AsyncOpenAI(
+            api_key=api_key or "EMPTY",
+            base_url=os.getenv("VLLM_OPTIMIZED_URL", "http://localhost:8002/v1")
+        )
+
+        # vLLM Quantized endpoint (optimizations + quantization)
+        self.quantized_client = AsyncOpenAI(
+            api_key=api_key or "EMPTY",
+            base_url=os.getenv("VLLM_QUANTIZED_URL", "http://localhost:8003/v1")
+        )
+
+        self.standard_model = os.getenv("VLLM_STANDARD_MODEL", "mistralai/Mistral-Small-Instruct-2409")
+        self.optimized_model = os.getenv("VLLM_OPTIMIZED_MODEL", "mistralai/Mistral-Small-Instruct-2409")
+        self.quantized_model = os.getenv("VLLM_QUANTIZED_MODEL", "RedHatAI/Mistral-Small-3.1-24B-Instruct-2503-FP8-dynamic")
 
     async def stream_tokens(
         self,
@@ -38,10 +45,17 @@ class InferenceEngine:
         racer: str,
         max_tokens: int = 100
     ) -> AsyncGenerator[TokenEvent, None]:
-        """Stream tokens from either vLLM or standard endpoint"""
+        """Stream tokens from standard, optimized, or quantized vLLM endpoint"""
 
-        client = self.vllm_client if racer == "vllm" else self.standard_client
-        model = self.vllm_model if racer == "vllm" else self.standard_model
+        if racer == "standard":
+            client = self.standard_client
+            model = self.standard_model
+        elif racer == "optimized":
+            client = self.optimized_client
+            model = self.optimized_model
+        else:  # quantized
+            client = self.quantized_client
+            model = self.quantized_model
 
         start_time = time.time()
         token_count = 0
@@ -90,8 +104,15 @@ class InferenceEngine:
     ) -> tuple[str, float, float]:
         """Generate complete response and return text, time, tokens/sec"""
 
-        client = self.vllm_client if racer == "vllm" else self.standard_client
-        model = self.vllm_model if racer == "vllm" else self.standard_model
+        if racer == "standard":
+            client = self.standard_client
+            model = self.standard_model
+        elif racer == "optimized":
+            client = self.optimized_client
+            model = self.optimized_model
+        else:  # quantized
+            client = self.quantized_client
+            model = self.quantized_model
 
         start_time = time.time()
         full_text = ""

@@ -10,12 +10,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - VLLM_URL=${VLLM_URL:-http://localhost:8001/v1}
+      - VLLM_STANDARD_URL=${VLLM_STANDARD_URL:-http://localhost:8001/v1}
+      - VLLM_OPTIMIZED_URL=${VLLM_OPTIMIZED_URL:-http://localhost:8002/v1}
+      - VLLM_QUANTIZED_URL=${VLLM_QUANTIZED_URL:-http://localhost:8003/v1}
       - VLLM_API_KEY=${VLLM_API_KEY:-}
-      - STANDARD_LLM_URL=${STANDARD_LLM_URL:-http://localhost:11434/v1}
-      - STANDARD_API_KEY=${STANDARD_API_KEY:-}
-      - VLLM_MODEL=${VLLM_MODEL:-llama3.1:8b}
-      - STANDARD_MODEL=${STANDARD_MODEL:-llama3.1:8b}
+      - VLLM_STANDARD_MODEL=${VLLM_STANDARD_MODEL:-mistralai/Mistral-Small-Instruct-2409}
+      - VLLM_OPTIMIZED_MODEL=${VLLM_OPTIMIZED_MODEL:-mistralai/Mistral-Small-Instruct-2409}
+      - VLLM_QUANTIZED_MODEL=${VLLM_QUANTIZED_MODEL:-RedHatAI/Mistral-Small-3.1-24B-Instruct-2503-FP8-dynamic}
     volumes:
       - ./backend:/app
     restart: unless-stopped

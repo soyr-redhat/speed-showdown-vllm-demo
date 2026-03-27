@@ -96,10 +96,11 @@ async def race_websocket(websocket: WebSocket):
                         "data": token_event.model_dump()
                     })
 
-            # Run both racers concurrently
+            # Run all three racers concurrently
             await asyncio.gather(
                 stream_racer("standard"),
-                stream_racer("vllm")
+                stream_racer("optimized"),
+                stream_racer("quantized")
             )
 
             # Send race complete
@@ -117,26 +118,42 @@ async def race_websocket(websocket: WebSocket):
 async def run_race(request: RaceRequest) -> RaceResults:
     """Run a complete race and return results"""
 
-    # Run both inferences
+    # Run all three inferences
     standard_task = engine.generate_complete(request.prompt, "standard", request.max_tokens)
-    vllm_task = engine.generate_complete(request.prompt, "vllm", request.max_tokens)
+    optimized_task = engine.generate_complete(request.prompt, "optimized", request.max_tokens)
+    quantized_task = engine.generate_complete(request.prompt, "quantized", request.max_tokens)
 
-    (standard_text, standard_time, standard_tps), (vllm_text, vllm_time, vllm_tps) = await asyncio.gather(
-        standard_task, vllm_task
+    (standard_text, standard_time, standard_tps), \
+    (optimized_text, optimized_time, optimized_tps), \
+    (quantized_text, quantized_time, quantized_tps) = await asyncio.gather(
+        standard_task, optimized_task, quantized_task
     )
 
-    speedup = standard_time / vllm_time if vllm_time > 0 else 1.0
-    winner = "vllm" if vllm_time < standard_time else "standard"
+    # Calculate speedups vs standard
+    optimized_speedup = standard_time / optimized_time if optimized_time > 0 else 1.0
+    quantized_speedup = standard_time / quantized_time if quantized_time > 0 else 1.0
+
+    # Determine winner (fastest time)
+    times = {
+        "standard": standard_time,
+        "optimized": optimized_time,
+        "quantized": quantized_time
+    }
+    winner = min(times, key=times.get)
 
     return RaceResults(
         winner=winner,
         standard_time=standard_time,
-        vllm_time=vllm_time,
+        optimized_time=optimized_time,
+        quantized_time=quantized_time,
         standard_tokens_per_sec=standard_tps,
-        vllm_tokens_per_sec=vllm_tps,
-        speedup=speedup,
+        optimized_tokens_per_sec=optimized_tps,
+        quantized_tokens_per_sec=quantized_tps,
         standard_text=standard_text,
-        vllm_text=vllm_text
+        optimized_text=optimized_text,
+        quantized_text=quantized_text,
+        optimized_speedup=optimized_speedup,
+        quantized_speedup=quantized_speedup
     )
 
 @app.post("/stress-test")
@@ -148,16 +165,19 @@ async def stress_test(config: StressTestConfig) -> StressTestResults:
         "failed": 0,
         "latencies": [],
         "throughputs": [],
-        "vllm_count": 0,
-        "standard_count": 0
+        "standard_count": 0,
+        "optimized_count": 0,
+        "quantized_count": 0
     }
 
     start_time = time.time()
 
     async def run_request(index: int):
         try:
-            # Alternate between vLLM and standard
-            racer = "vllm" if index % 2 == 0 else "standard"
+            # Rotate between standard, optimized, and quantized
+            racers = ["standard", "optimized", "quantized"]
+            racer = racers[index % 3]
+
             text, latency, tps = await engine.generate_complete(
                 config.prompt,
                 racer,
@@ -168,10 +188,12 @@ async def stress_test(config: StressTestConfig) -> StressTestResults:
             results["latencies"].append(latency)
             results["throughputs"].append(tps)
 
-            if racer == "vllm":
-                results["vllm_count"] += 1
-            else:
+            if racer == "standard":
                 results["standard_count"] += 1
+            elif racer == "optimized":
+                results["optimized_count"] += 1
+            else:
+                results["quantized_count"] += 1
 
         except Exception as e:
             print(f"Request {index} failed: {e}")
@@ -190,8 +212,9 @@ async def stress_test(config: StressTestConfig) -> StressTestResults:
         avg_latency=sum(results["latencies"]) / len(results["latencies"]) if results["latencies"] else 0,
         avg_throughput=sum(results["throughputs"]) / len(results["throughputs"]) if results["throughputs"] else 0,
         total_time=total_time,
-        vllm_handled=results["vllm_count"],
-        standard_handled=results["standard_count"]
+        standard_handled=results["standard_count"],
+        optimized_handled=results["optimized_count"],
+        quantized_handled=results["quantized_count"]
     )
 
 @app.post("/leaderboard")

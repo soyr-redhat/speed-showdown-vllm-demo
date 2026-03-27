@@ -15,7 +15,7 @@ class RaceRequest(BaseModel):
     max_tokens: int = Field(default=100, ge=10, le=500)
 
 class TokenEvent(BaseModel):
-    racer: str  # "standard" or "vllm"
+    racer: str  # "standard", "optimized", or "quantized"
     token: str
     index: int
     timestamp: float
@@ -24,12 +24,16 @@ class TokenEvent(BaseModel):
 class RaceResults(BaseModel):
     winner: str
     standard_time: float
-    vllm_time: float
+    optimized_time: float
+    quantized_time: float
     standard_tokens_per_sec: float
-    vllm_tokens_per_sec: float
-    speedup: float
+    optimized_tokens_per_sec: float
+    quantized_tokens_per_sec: float
     standard_text: str
-    vllm_text: str
+    optimized_text: str
+    quantized_text: str
+    optimized_speedup: float  # vs standard
+    quantized_speedup: float  # vs standard
 
 class LeaderboardEntry(BaseModel):
     username: str
@@ -49,5 +53,6 @@ class StressTestResults(BaseModel):
     avg_latency: float
     avg_throughput: float
     total_time: float
-    vllm_handled: int
     standard_handled: int
+    optimized_handled: int
+    quantized_handled: int

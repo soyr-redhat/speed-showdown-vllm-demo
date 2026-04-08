@@ -7,21 +7,26 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
   const [activeInfo, setActiveInfo] = useState(null) // 'standard', 'optimized', 'quantized', or null
 
   useEffect(() => {
-    // Progress is always relative - the leader (most tokens) is at 100%
-    // This creates a smooth visual race where the leader is always full
+    // Progress based on TPS (speed) - the fastest racer is always at 100%
+    // This creates a smooth visual race where speed determines the leader
     // and slower racers trail behind proportionally
 
-    const maxTokensGenerated = Math.max(
-      standardTokens.length,
-      optimizedTokens.length,
-      quantizedTokens.length,
-      1 // Prevent division by zero
-    )
+    const standardTPS = standardTokens.length > 0
+      ? (standardTokens[standardTokens.length - 1]?.tokens_per_sec || 0)
+      : 0
+    const optimizedTPS = optimizedTokens.length > 0
+      ? (optimizedTokens[optimizedTokens.length - 1]?.tokens_per_sec || 0)
+      : 0
+    const quantizedTPS = quantizedTokens.length > 0
+      ? (quantizedTokens[quantizedTokens.length - 1]?.tokens_per_sec || 0)
+      : 0
 
-    // Scale everyone relative to the leader
-    setStandardProgress((standardTokens.length / maxTokensGenerated) * 100)
-    setOptimizedProgress((optimizedTokens.length / maxTokensGenerated) * 100)
-    setQuantizedProgress((quantizedTokens.length / maxTokensGenerated) * 100)
+    const maxTPS = Math.max(standardTPS, optimizedTPS, quantizedTPS, 0.1)
+
+    // Scale everyone relative to the fastest racer (highest TPS)
+    setStandardProgress((standardTPS / maxTPS) * 100)
+    setOptimizedProgress((optimizedTPS / maxTPS) * 100)
+    setQuantizedProgress((quantizedTPS / maxTPS) * 100)
   }, [standardTokens, optimizedTokens, quantizedTokens])
 
   const getTokensPerSec = (tokens) => {

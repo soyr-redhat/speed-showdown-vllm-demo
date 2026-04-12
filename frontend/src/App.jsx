@@ -174,17 +174,17 @@ function App() {
               <div className="bg-redhat-dark-elevated rounded-lg px-6 py-3 flex items-center gap-3 border border-redhat-grid-line">
                 <div className="text-center">
                   <div className="text-orange-400 font-bold text-2xl font-mono">{wins.standard}</div>
-                  <div className="text-xs text-gray-400">Standard</div>
+                  <div className="text-xs text-redhat-text-secondary">Standard</div>
                 </div>
-                <div className="text-gray-600 font-bold text-xl">-</div>
+                <div className="text-redhat-text-tertiary font-bold text-xl">-</div>
                 <div className="text-center">
                   <div className="text-blue-400 font-bold text-2xl font-mono">{wins.optimized}</div>
-                  <div className="text-xs text-gray-400">Optimized</div>
+                  <div className="text-xs text-redhat-text-secondary">Optimized</div>
                 </div>
-                <div className="text-gray-600 font-bold text-xl">-</div>
+                <div className="text-redhat-text-tertiary font-bold text-xl">-</div>
                 <div className="text-center">
                   <div className="text-green-400 font-bold text-2xl font-mono">{wins.quantized}</div>
-                  <div className="text-xs text-gray-400">Quantized</div>
+                  <div className="text-xs text-redhat-text-secondary">Quantized</div>
                 </div>
               </div>
             </div>

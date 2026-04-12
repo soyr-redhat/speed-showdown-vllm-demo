@@ -43,7 +43,7 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
   const InfoButton = ({ onClick }) => (
     <button
       onClick={onClick}
-      className="ml-2 w-5 h-5 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-xs text-gray-300 hover:text-white transition-all border border-gray-600 hover:border-gray-500"
+      className="ml-2 w-5 h-5 rounded-full bg-redhat-dark-surface hover:bg-redhat-dark-elevated flex items-center justify-center text-xs text-redhat-text-secondary hover:text-white transition-all border border-redhat-grid-line hover:border-redhat-grid-line"
       title="Learn more"
     >
       i
@@ -117,18 +117,18 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="p-6 border-b border-gray-700">
+          <div className="p-6 border-b border-redhat-grid-line">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="text-4xl">{info.icon}</div>
                 <div>
                   <h3 className="text-2xl font-bold">{info.title}</h3>
-                  <p className="text-gray-400 text-sm mt-1">{info.description}</p>
+                  <p className="text-redhat-text-secondary text-sm mt-1">{info.description}</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-white text-2xl leading-none w-8 h-8 flex items-center justify-center rounded hover:bg-gray-700"
+                className="text-redhat-text-secondary hover:text-white text-2xl leading-none w-8 h-8 flex items-center justify-center rounded hover:bg-redhat-dark-surface"
               >
                 ×
               </button>
@@ -139,22 +139,22 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
           <div className="p-6 space-y-6">
             {/* Model Info */}
             <div>
-              <div className="text-sm text-gray-400 font-mono uppercase tracking-wider mb-1">Model</div>
-              <div className="text-lg font-mono bg-redhat-dark-elevated px-3 py-2 rounded border border-gray-700">
+              <div className="text-sm text-redhat-text-secondary font-mono uppercase tracking-wider mb-1">Model</div>
+              <div className="text-lg font-mono bg-redhat-dark-elevated px-3 py-2 rounded border border-redhat-grid-line">
                 {info.model}
               </div>
             </div>
 
             {/* Features */}
             <div>
-              <div className="text-sm text-gray-400 font-mono uppercase tracking-wider mb-3">Features & Capabilities</div>
+              <div className="text-sm text-redhat-text-secondary font-mono uppercase tracking-wider mb-3">Features & Capabilities</div>
               <div className="space-y-3">
                 {info.features.map((feature, idx) => (
                   <div key={idx} className="flex gap-3">
                     <div className={`text-${info.color}-400 mt-1 flex-shrink-0`}>✓</div>
                     <div>
                       <div className="font-bold text-sm">{feature.name}</div>
-                      <div className="text-sm text-gray-400">{feature.desc}</div>
+                      <div className="text-sm text-redhat-text-secondary">{feature.desc}</div>
                     </div>
                   </div>
                 ))}
@@ -163,7 +163,7 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
 
             {/* Optimization Level */}
             <div className={`bg-gradient-to-r from-${info.color}-900/20 to-transparent rounded-lg p-4 border border-${info.color}-500/30`}>
-              <div className="text-sm text-gray-400 font-mono uppercase tracking-wider mb-1">Optimization Level</div>
+              <div className="text-sm text-redhat-text-secondary font-mono uppercase tracking-wider mb-1">Optimization Level</div>
               <div className="text-sm">{info.optimizations}</div>
             </div>
           </div>
@@ -192,7 +192,7 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
                     <InfoButton onClick={() => setActiveInfo('standard')} />
                     {winner === 'standard' && <CrownIcon />}
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-redhat-text-secondary">
                     {getTokensPerSec(standardTokens)} tok/s | {standardTokens.length}
                   </div>
                 </div>
@@ -217,7 +217,7 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
                 <span key={i} className="text-orange-300">{token.token}</span>
               ))}
               {standardTokens.length === 0 && (
-                <span className="text-gray-500">Waiting...</span>
+                <span className="text-redhat-text-secondary">Waiting...</span>
               )}
             </div>
           </div>
@@ -233,7 +233,7 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
                     <InfoButton onClick={() => setActiveInfo('optimized')} />
                     {winner === 'optimized' && <CrownIcon />}
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-redhat-text-secondary">
                     {getTokensPerSec(optimizedTokens)} tok/s | {optimizedTokens.length}
                   </div>
                 </div>
@@ -258,7 +258,7 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
                 <span key={i} className="text-blue-300">{token.token}</span>
               ))}
               {optimizedTokens.length === 0 && (
-                <span className="text-gray-500">Waiting...</span>
+                <span className="text-redhat-text-secondary">Waiting...</span>
               )}
             </div>
           </div>
@@ -274,7 +274,7 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
                     <InfoButton onClick={() => setActiveInfo('quantized')} />
                     {winner === 'quantized' && <CrownIcon />}
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-redhat-text-secondary">
                     {getTokensPerSec(quantizedTokens)} tok/s | {quantizedTokens.length}
                   </div>
                 </div>
@@ -299,7 +299,7 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
                 <span key={i} className="text-green-300">{token.token}</span>
               ))}
               {quantizedTokens.length === 0 && (
-                <span className="text-gray-500">Waiting...</span>
+                <span className="text-redhat-text-secondary">Waiting...</span>
               )}
             </div>
           </div>

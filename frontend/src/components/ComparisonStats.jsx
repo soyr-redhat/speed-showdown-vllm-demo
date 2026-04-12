@@ -16,8 +16,8 @@ function ComparisonStats({ standardMetrics, quantizedMetrics }) {
           <div className="text-center">
             <div className="text-5xl font-bold text-redhat-red mb-2 font-mono">{memorySavings}%</div>
             <div className="text-lg font-semibold text-redhat-red mb-1">Memory Savings</div>
-            <div className="text-sm text-gray-300">59 GB → 31 GB</div>
-            <div className="text-xs text-gray-400 mt-1">FP8 vs BF16 precision</div>
+            <div className="text-sm text-redhat-text-secondary">59 GB → 31 GB</div>
+            <div className="text-xs text-redhat-text-secondary mt-1">FP8 vs BF16 precision</div>
           </div>
         </div>
 
@@ -27,36 +27,36 @@ function ComparisonStats({ standardMetrics, quantizedMetrics }) {
             <div className="text-2xl font-bold text-green-400 mb-1 font-mono">
               {speedup > 0 ? '+' : ''}{speedup}%
             </div>
-            <div className="text-xs text-gray-400">Speed</div>
+            <div className="text-xs text-redhat-text-secondary">Speed</div>
           </div>
 
           <div className="bg-redhat-dark-elevated rounded p-3 text-center border border-green-500/30">
             <div className="text-2xl font-bold text-green-400 mb-1 font-mono">
               {tpsImprovement > 0 ? '+' : ''}{tpsImprovement}%
             </div>
-            <div className="text-xs text-gray-400">TPS</div>
+            <div className="text-xs text-redhat-text-secondary">TPS</div>
           </div>
 
           <div className="bg-redhat-dark-elevated rounded p-3 text-center border border-green-500/30">
             <div className="text-2xl font-bold text-green-400 mb-1 font-mono">
               {ttftImprovement > 0 ? '+' : ''}{ttftImprovement}%
             </div>
-            <div className="text-xs text-gray-400">TTFT</div>
+            <div className="text-xs text-redhat-text-secondary">TTFT</div>
           </div>
 
           <div className="bg-redhat-dark-elevated rounded p-3 text-center border border-redhat-grid-line">
             <div className="text-xl font-bold text-blue-400 mb-1 font-mono">&gt;99%</div>
-            <div className="text-xs text-gray-400">Accuracy</div>
+            <div className="text-xs text-redhat-text-secondary">Accuracy</div>
           </div>
 
           <div className="bg-redhat-dark-elevated rounded p-3 text-center border border-redhat-grid-line">
             <div className="text-xl font-bold text-orange-400 mb-1 font-mono">2x</div>
-            <div className="text-xs text-gray-400">Smaller</div>
+            <div className="text-xs text-redhat-text-secondary">Smaller</div>
           </div>
 
           <div className="bg-redhat-dark-elevated rounded p-3 text-center border border-redhat-grid-line">
             <div className="text-xl font-bold text-green-400 mb-1 font-mono">100%</div>
-            <div className="text-xs text-gray-400">Open</div>
+            <div className="text-xs text-redhat-text-secondary">Open</div>
           </div>
         </div>
       </div>

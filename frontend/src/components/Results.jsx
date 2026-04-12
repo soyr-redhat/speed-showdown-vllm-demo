@@ -12,7 +12,7 @@ function Results({ results, onReset }) {
           <h2 className="text-4xl font-bold mb-2">
             {isVllmWinner ? 'vLLM Wins!' : 'Standard Inference Wins!'}
           </h2>
-          <p className="text-gray-400">
+          <p className="text-redhat-text-secondary">
             {isVllmWinner
               ? 'Optimized inference delivers superior performance'
               : 'An unexpected result!'
@@ -30,11 +30,11 @@ function Results({ results, onReset }) {
             </div>
             <div className="space-y-3">
               <div>
-                <div className="text-gray-400 text-sm">Generation Time</div>
+                <div className="text-redhat-text-secondary text-sm">Generation Time</div>
                 <div className="text-2xl font-bold">{results.vllmTime.toFixed(3)}s</div>
               </div>
               <div>
-                <div className="text-gray-400 text-sm">Throughput</div>
+                <div className="text-redhat-text-secondary text-sm">Throughput</div>
                 <div className="text-2xl font-bold">{results.vllmTPS.toFixed(2)} tok/s</div>
               </div>
             </div>
@@ -48,11 +48,11 @@ function Results({ results, onReset }) {
             </div>
             <div className="space-y-3">
               <div>
-                <div className="text-gray-400 text-sm">Generation Time</div>
+                <div className="text-redhat-text-secondary text-sm">Generation Time</div>
                 <div className="text-2xl font-bold">{results.standardTime.toFixed(3)}s</div>
               </div>
               <div>
-                <div className="text-gray-400 text-sm">Throughput</div>
+                <div className="text-redhat-text-secondary text-sm">Throughput</div>
                 <div className="text-2xl font-bold">{results.standardTPS.toFixed(2)} tok/s</div>
               </div>
             </div>
@@ -63,11 +63,11 @@ function Results({ results, onReset }) {
         <div className="bg-gradient-to-r from-redhat-red/20 to-transparent rounded-lg p-6 mb-8 border border-redhat-red">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-gray-400 text-sm mb-1">Performance Improvement</div>
+              <div className="text-redhat-text-secondary text-sm mb-1">Performance Improvement</div>
               <div className="text-4xl font-bold text-redhat-red">
                 {results.speedup.toFixed(2)}x faster
               </div>
-              <div className="text-gray-400 text-sm mt-1">
+              <div className="text-redhat-text-secondary text-sm mt-1">
                 {isVllmWinner
                   ? 'vLLM completed the task faster than standard inference'
                   : 'Comparative performance metric'
@@ -81,7 +81,7 @@ function Results({ results, onReset }) {
         {/* Key Takeaways */}
         <div className="bg-redhat-dark-elevated rounded-lg p-6 mb-6">
           <h3 className="font-bold text-lg mb-3">Why vLLM is Faster</h3>
-          <ul className="space-y-2 text-sm text-gray-300">
+          <ul className="space-y-2 text-sm text-redhat-text-secondary">
             <li className="flex items-start gap-2">
               <span className="text-green-400 mt-1">✓</span>
               <span><strong>Continuous Batching:</strong> Processes multiple requests efficiently without waiting for all to complete</span>
@@ -122,7 +122,7 @@ function Results({ results, onReset }) {
       </div>
 
       {/* Educational Footer */}
-      <div className="mt-6 text-center text-sm text-gray-400">
+      <div className="mt-6 text-center text-sm text-redhat-text-secondary">
         <p>
           Learn more about{' '}
           <a href="https://vllm.ai" target="_blank" rel="noopener noreferrer" className="text-redhat-red hover:underline">

@@ -27,12 +27,12 @@ function PromptSelector({ selectedPrompt, setSelectedPrompt, onStart, isRacing }
   }, [menuOpen])
 
   return (
-    <div className="flex-shrink-0 bg-surface border border-line rounded-lg p-3 flex flex-col lg:flex-row gap-2.5 lg:items-stretch">
+    <div className="flex-shrink-0 bg-surface border border-line rounded-lg p-3.5 flex flex-col lg:flex-row gap-3 lg:items-stretch">
       <div className="relative lg:w-56 flex-shrink-0" ref={menuRef}>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           disabled={isRacing}
-          className={`w-full flex items-center justify-between gap-2 bg-surface2 text-xs font-mono px-3 py-2.5 rounded-md border transition-all disabled:opacity-50 cursor-pointer ${
+          className={`w-full h-full min-h-[64px] flex items-center justify-between gap-2 bg-surface2 text-xs font-mono px-3 py-2.5 rounded-md border transition-all disabled:opacity-50 cursor-pointer ${
             menuOpen ? 'border-accent text-text' : 'border-line text-text-2 hover:border-accent hover:text-text'
           }`}
         >
@@ -59,20 +59,20 @@ function PromptSelector({ selectedPrompt, setSelectedPrompt, onStart, isRacing }
         )}
       </div>
 
-      <input
-        type="text"
+      <textarea
         value={selectedPrompt}
         onChange={(e) => setSelectedPrompt(e.target.value)}
         onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onStart() } }}
         disabled={isRacing}
-        className="flex-1 min-w-0 bg-surface2 text-text px-3.5 py-2.5 rounded-md text-sm font-mono border border-line focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent disabled:opacity-50 transition-all"
-        placeholder="Type your prompt, or pick a sample…"
+        rows={2}
+        className="flex-1 min-w-0 bg-surface2 text-text px-3.5 py-2.5 rounded-md text-sm font-mono leading-relaxed border border-line focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent disabled:opacity-50 transition-all resize-none"
+        placeholder="Type your prompt, or pick a sample… (Enter to race, Shift+Enter for a new line)"
       />
 
       <button
         onClick={onStart}
         disabled={!selectedPrompt.trim() || isRacing}
-        className="lg:w-44 flex-shrink-0 bg-accent text-white px-6 py-2.5 rounded-md font-display font-bold text-sm hover:bg-accent-deep active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-wait disabled:active:scale-100"
+        className="lg:w-44 flex-shrink-0 bg-accent text-white px-6 py-3 rounded-md font-display font-bold text-sm hover:bg-accent-deep active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-wait disabled:active:scale-100"
       >
         {isRacing ? 'Racing…' : 'Start race'}
       </button>

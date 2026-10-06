@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 const RACERS = {
   standard: {
@@ -65,6 +65,77 @@ const CrownIcon = () => (
     <path d="M10 3l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1 2-4z" />
   </svg>
 )
+
+function Lane({ info, tokens, isWinner, raceState, progress, onInfo }) {
+  const feedRef = useRef(null)
+
+  // Auto-scroll the feed to the latest tokens as they stream
+  useEffect(() => {
+    if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight
+  }, [tokens])
+
+  const getTPS = () => {
+    if (tokens.length === 0) return '—'
+    return tokens[tokens.length - 1]?.tokens_per_sec?.toFixed(1) ?? '—'
+  }
+
+  return (
+    <div
+      className={`min-h-0 flex flex-col rounded-lg bg-surface border border-line border-t-[3px] p-3 transition-all ${info.laneTop} ${
+        isWinner ? 'winner-glow' : ''
+      }`}
+    >
+      {/* Lane header */}
+      <div className="flex items-center justify-between gap-2 mb-2.5">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-lg flex-shrink-0">{info.icon}</span>
+          <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+            <span className="font-display font-bold text-sm">{info.name}</span>
+            {info.featured && (
+              <span className="font-mono font-bold text-[8px] uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-proof/15 text-proof border border-proof/40">
+                Red Hat AI
+              </span>
+            )}
+            <button
+              onClick={() => onInfo(info.key)}
+              className="w-4 h-4 rounded-full bg-surface2 text-text-3 hover:bg-line hover:text-text flex items-center justify-center text-[9px] transition-all border border-line"
+              title="Learn more"
+            >
+              i
+            </button>
+            {isWinner && <CrownIcon />}
+          </div>
+        </div>
+        <div className={`font-mono font-bold text-base ${info.accentText} flex-shrink-0`}>
+          {getTPS()} <span className="text-[9px] text-dim font-normal">tok/s</span>
+          <span className="text-dim font-normal"> · {tokens.length} tok</span>
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className={`relative h-5 rounded-md overflow-hidden bg-surface2 border border-line`}>
+        <div
+          className={`h-full bg-gradient-to-r ${info.barGradient} transition-all duration-300 relative`}
+          style={{ width: `${progress}%` }}
+        >
+          {raceState === 'racing' && <div className="shimmer"></div>}
+        </div>
+      </div>
+
+      {/* Token feed fills remaining lane height */}
+      <div ref={feedRef} className={`flex-1 min-h-0 bg-surface2 rounded-md p-3 overflow-y-auto feed text-sm font-mono leading-relaxed mt-2.5 border transition-all ${
+        isWinner ? 'border-proof/60' : 'border-transparent'
+      }`}>
+        {tokens.map((token, i) => (
+          <span key={i} className={`token-in ${info.accentText}`}>{token.token}</span>
+        ))}
+        {tokens.length === 0 && (
+          <span className="text-dim">{raceState === 'racing' ? 'Warming up…' : 'Press Start race to begin'}</span>
+        )}
+      </div>
+    </div>
+  )
+}
 
 function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState, winner }) {
   const [activeInfo, setActiveInfo] = useState(null)
@@ -171,68 +242,17 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
     <>
       {activeInfo && <InfoModal racer={activeInfo} onClose={() => setActiveInfo(null)} />}
 
-      {Object.entries(RACERS).map(([key, info]) => {
-        const tokens = tokenMap[key]
-        const isWinner = winner === key
-
-        return (
-          <div
-            key={key}
-            className={`min-h-0 flex flex-col rounded-lg bg-surface border border-line border-t-[3px] p-3 transition-all ${info.laneTop} ${
-              isWinner ? 'winner-glow' : ''
-            }`}
-          >
-            {/* Lane header */}
-            <div className="flex items-center justify-between gap-2 mb-2.5">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="text-lg flex-shrink-0">{info.icon}</span>
-                <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-                  <span className="font-display font-bold text-sm">{info.name}</span>
-                  {info.featured && (
-                    <span className="font-mono font-bold text-[8px] uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-proof/15 text-proof border border-proof/40">
-                      Red Hat AI
-                    </span>
-                  )}
-                  <button
-                    onClick={() => setActiveInfo(key)}
-                    className="w-4 h-4 rounded-full bg-surface2 text-text-3 hover:bg-line hover:text-text flex items-center justify-center text-[9px] transition-all border border-line"
-                    title="Learn more"
-                  >
-                    i
-                  </button>
-                  {isWinner && <CrownIcon />}
-                </div>
-              </div>
-              <div className={`font-mono font-bold text-base ${info.accentText} flex-shrink-0`}>
-                {getTPS(tokens)} <span className="text-[9px] text-dim font-normal">tok/s</span>
-                <span className="text-dim font-normal"> · {tokens.length} tok</span>
-              </div>
-            </div>
-
-            {/* Progress bar */}
-            <div className={`relative h-5 rounded-md overflow-hidden bg-surface2 border border-line`}>
-              <div
-                className={`h-full bg-gradient-to-r ${info.barGradient} transition-all duration-300 relative`}
-                style={{ width: `${progress[key]}%` }}
-              >
-                {raceState === 'racing' && <div className="shimmer"></div>}
-              </div>
-            </div>
-
-            {/* Token feed fills remaining lane height */}
-            <div className={`flex-1 min-h-0 bg-surface2 rounded-md p-2.5 overflow-y-auto feed text-xs font-mono mt-2.5 border transition-all ${
-              isWinner ? 'border-proof/60' : 'border-transparent'
-            }`}>
-              {tokens.map((token, i) => (
-                <span key={i} className={`token-in ${info.accentText}`}>{token.token}</span>
-              ))}
-              {tokens.length === 0 && (
-                <span className="text-dim">{raceState === 'racing' ? 'Warming up…' : 'Press Start race to begin'}</span>
-              )}
-            </div>
-          </div>
-        )
-      })}
+      {Object.entries(RACERS).map(([key, info]) => (
+        <Lane
+          key={key}
+          info={{ ...info, key }}
+          tokens={tokenMap[key]}
+          isWinner={winner === key}
+          raceState={raceState}
+          progress={progress[key]}
+          onInfo={setActiveInfo}
+        />
+      ))}
     </>
   )
 }

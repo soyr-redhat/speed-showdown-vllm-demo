@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react'
 import RaceTrack from './components/RaceTrack'
 import PromptSelector from './components/PromptSelector'
 import Results from './components/Results'
-import StackPanel from './components/StackPanel'
+import StackView from './components/StackView'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 function App() {
+  const [view, setView] = useState(() => (window.location.hash === '#/stack' ? 'stack' : 'race'))
   const [raceState, setRaceState] = useState('idle') // idle, racing, finished
   const [selectedPrompt, setSelectedPrompt] = useState('')
   const [standardTokens, setStandardTokens] = useState([])
@@ -32,6 +33,17 @@ function App() {
     // Poll for updates every 5 seconds
     const interval = setInterval(loadWins, 5000)
     return () => clearInterval(interval)
+  }, [])
+
+  const showView = (next) => {
+    setView(next)
+    window.history.pushState(null, '', next === 'stack' ? '#/stack' : '#/race')
+  }
+
+  useEffect(() => {
+    const onPop = () => setView(window.location.hash === '#/stack' ? 'stack' : 'race')
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
   }, [])
 
   const startRace = () => {
@@ -157,77 +169,83 @@ function App() {
       ? 'Complete'
       : 'Idle'
 
-  return (
-    <div className="min-h-screen bg-bg font-text text-text">
-      <div className="accent-glow"></div>
+  const navTab = (key, label) => (
+    <button
+      key={key}
+      onClick={() => showView(key)}
+      className={`px-4 py-1.5 rounded-md font-display font-bold text-sm transition-all ${
+        view === key
+          ? 'bg-accent text-white'
+          : 'text-text-2 hover:text-text hover:bg-surface2'
+      }`}
+    >
+      {label}
+    </button>
+  )
 
-      <header className="sticky top-0 z-30 border-b border-line" style={{ background: 'rgba(31, 31, 31, 0.92)', backdropFilter: 'blur(16px)' }}>
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+  return (
+    <div className="h-screen flex flex-col bg-bg font-text text-text overflow-hidden">
+      <header className="flex-shrink-0 z-30 border-b border-line" style={{ background: 'rgba(31, 31, 31, 0.92)', backdropFilter: 'blur(16px)' }}>
+        <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img src="/redhat.svg" alt="Red Hat" className="h-6 w-auto" />
             <span className="text-dim font-light text-lg select-none">|</span>
-            <div>
-              <h1 className="font-display font-extrabold text-lg leading-tight tracking-tight">
-                Speed <span className="text-accent">Showdown</span>
-              </h1>
-            </div>
+            <h1 className="font-display font-extrabold text-lg leading-tight tracking-tight">
+              Speed <span className="text-accent">Showdown</span>
+            </h1>
           </div>
 
-          <div className="flex items-center gap-2 font-mono font-bold text-[10px] uppercase tracking-widest text-text-2 bg-surface2 border border-line rounded-full px-3 py-1.5">
-            <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`}></span>
-            {statusText}
+          <nav className="flex items-center gap-1.5">
+            {navTab('race', 'Race')}
+            {navTab('stack', 'Stack')}
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 font-mono text-xs">
+              <span className="text-text-3">Standard <b className="text-text-2">{wins.standard}</b></span>
+              <span className="text-dim">·</span>
+              <span className="text-text-3">Optimized <b className="text-warning">{wins.optimized}</b></span>
+              <span className="text-dim">·</span>
+              <span className="text-text-3">Quantized <b className="text-proof">{wins.quantized}</b></span>
+            </div>
+            <div className="flex items-center gap-2 font-mono font-bold text-[10px] uppercase tracking-widest text-text-2 bg-surface2 border border-line rounded-full px-3 py-1.5">
+              <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`}></span>
+              {statusText}
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-5 relative z-10 space-y-4">
-        {/* Global win stats */}
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { key: 'standard', label: 'Standard wins' },
-            { key: 'optimized', label: 'Optimized wins' },
-            { key: 'quantized', label: 'Quantized wins' },
-          ].map(({ key, label }) => (
-            <div key={key} className="bg-surface border border-line rounded-lg p-4 shadow-card">
-              <div className="font-mono font-bold text-[10px] uppercase tracking-widest text-text-3 mb-1.5">{label}</div>
-              <div className="font-mono font-bold text-3xl text-text">{wins[key]}</div>
-            </div>
-          ))}
-        </div>
+      {view === 'race' ? (
+        <main className="flex-1 min-h-0 flex flex-col gap-3 p-3 overflow-y-auto lg:overflow-hidden">
+          {/* Results banner after a race */}
+          {raceState === 'finished' && results && (
+            <Results results={results} onReset={reset} />
+          )}
 
-        {/* Race track */}
-        <RaceTrack
-          standardTokens={standardTokens}
-          optimizedTokens={optimizedTokens}
-          quantizedTokens={quantizedTokens}
-          raceState={raceState}
-          winner={winner}
-          wins={wins}
-        />
+          {/* Lanes fill the stage */}
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <RaceTrack
+              standardTokens={standardTokens}
+              optimizedTokens={optimizedTokens}
+              quantizedTokens={quantizedTokens}
+              raceState={raceState}
+              winner={winner}
+              wins={wins}
+            />
+          </div>
 
-        {/* Results panel after a race */}
-        {raceState === 'finished' && results && (
-          <Results results={results} onReset={reset} />
-        )}
-
-        {/* Tooling stack */}
-        <StackPanel />
-
-        {/* Prompt input */}
-        <PromptSelector
-          selectedPrompt={selectedPrompt}
-          setSelectedPrompt={setSelectedPrompt}
-          onStart={startRace}
-          isRacing={raceState === 'racing'}
-        />
-      </main>
-
-      <footer className="border-t border-line mt-6 py-4 relative z-10">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-widest text-dim">
-          <p>Red Hat AI · Four pillars demo</p>
-          <p>vLLM · LLM Compressor · GUIDELLm</p>
-        </div>
-      </footer>
+          {/* Compact prompt bar */}
+          <PromptSelector
+            selectedPrompt={selectedPrompt}
+            setSelectedPrompt={setSelectedPrompt}
+            onStart={startRace}
+            isRacing={raceState === 'racing'}
+          />
+        </main>
+      ) : (
+        <StackView />
+      )}
     </div>
   )
 }

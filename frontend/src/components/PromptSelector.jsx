@@ -9,58 +9,37 @@ const SAMPLE_PROMPTS = [
 ]
 
 function PromptSelector({ selectedPrompt, setSelectedPrompt, onStart, isRacing }) {
-  const [showAllSamples, setShowAllSamples] = useState(false)
-  const visiblePrompts = showAllSamples ? SAMPLE_PROMPTS : SAMPLE_PROMPTS.slice(0, 3)
-
   return (
-    <div className="bg-surface rounded-xl border border-line shadow-card p-4">
-      <div className="mb-3">
-        <div className="font-mono font-bold text-[10px] uppercase tracking-widest text-accent mb-2.5">Quick samples</div>
-        <div className="flex flex-wrap gap-2">
-          {visiblePrompts.map((prompt, index) => (
-            <button
-              key={index}
-              onClick={() => setSelectedPrompt(prompt)}
-              disabled={isRacing}
-              className={`px-3 py-1.5 rounded-md text-left text-xs border transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer max-w-full truncate ${
-                selectedPrompt === prompt
-                  ? 'bg-accent/15 border-accent text-text'
-                  : 'bg-surface2 border-line text-text-2 hover:border-accent hover:text-text'
-              }`}
-            >
-              {prompt}
-            </button>
-          ))}
-          <button
-            onClick={() => setShowAllSamples(!showAllSamples)}
-            className="px-3 py-1.5 rounded-md text-xs bg-surface2 border border-line text-dim hover:text-text transition-all cursor-pointer"
-          >
-            {showAllSamples ? 'Show less' : 'More…'}
-          </button>
-        </div>
-      </div>
+    <div className="flex-shrink-0 bg-surface border border-line rounded-lg p-3 flex flex-col lg:flex-row gap-2.5 lg:items-stretch">
+      <select
+        value=""
+        onChange={(e) => { if (e.target.value) setSelectedPrompt(e.target.value) }}
+        disabled={isRacing}
+        className="lg:w-56 flex-shrink-0 bg-surface2 text-text-2 text-xs font-mono px-3 py-2.5 rounded-md border border-line focus:outline-none focus:border-accent disabled:opacity-50 transition-all cursor-pointer"
+      >
+        <option value="">Sample prompts…</option>
+        {SAMPLE_PROMPTS.map((prompt, index) => (
+          <option key={index} value={prompt}>{prompt}</option>
+        ))}
+      </select>
 
-      <div className="font-mono font-bold text-[10px] uppercase tracking-widest text-accent mb-2.5">Your prompt</div>
-      <textarea
+      <input
+        type="text"
         value={selectedPrompt}
         onChange={(e) => setSelectedPrompt(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onStart() } }}
         disabled={isRacing}
-        className="w-full bg-surface2 text-text px-4 py-3 rounded-md h-28 mb-4 text-sm font-mono border border-line focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent disabled:opacity-50 transition-all resize-none"
-        placeholder="Type your prompt here, or pick a sample above…"
+        className="flex-1 min-w-0 bg-surface2 text-text px-3.5 py-2.5 rounded-md text-sm font-mono border border-line focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent disabled:opacity-50 transition-all"
+        placeholder="Type your prompt, or pick a sample…"
       />
 
-      <div className="flex items-center gap-4">
-        <button
-          onClick={onStart}
-          disabled={!selectedPrompt.trim() || isRacing}
-          className="flex-1 bg-accent text-white px-6 py-3 rounded-md font-display font-bold text-base hover:bg-accent-deep transition-all disabled:opacity-50 disabled:cursor-wait"
-        >
-          {isRacing ? 'Racing…' : 'Start race'}
-        </button>
-        <div className="hidden sm:block text-[11px] text-dim font-mono leading-relaxed">
-          Races 3 vLLM configs<br />in parallel on a shared GPU
-        </div>
-      </div>
+      <button
+        onClick={onStart}
+        disabled={!selectedPrompt.trim() || isRacing}
+        className="lg:w-44 flex-shrink-0 bg-accent text-white px-6 py-2.5 rounded-md font-display font-bold text-sm hover:bg-accent-deep transition-all disabled:opacity-50 disabled:cursor-wait"
+      >
+        {isRacing ? 'Racing…' : 'Start race'}
+      </button>
     </div>
   )
 }

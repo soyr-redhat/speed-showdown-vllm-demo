@@ -7,9 +7,10 @@ const RACERS = {
     icon: '🐢',
     model: 'Mistral-7B-Instruct-v0.3',
     description: 'Baseline vLLM deployment with default configuration',
-    barGradient: 'from-gray-60 to-gray-40',
-    accentText: 'text-gray-30',
-    trackBorder: 'border-gray-50/30',
+    barGradient: 'from-line to-text-3',
+    accentText: 'text-text-2',
+    laneTop: 'border-t-dim',
+    trackBorder: 'border-line',
     features: [
       { name: 'PagedAttention', desc: 'Efficient KV cache memory management' },
       { name: 'Continuous batching', desc: 'Process multiple requests without waiting' },
@@ -25,9 +26,10 @@ const RACERS = {
     icon: '⚡',
     model: 'Mistral-7B-Instruct-v0.3',
     description: 'Enhanced vLLM with CUDA graphs and performance tuning',
-    barGradient: 'from-purple-60 to-purple-40',
-    accentText: 'text-purple-30',
-    trackBorder: 'border-purple-50/40',
+    barGradient: 'from-danger to-warning',
+    accentText: 'text-warning',
+    laneTop: 'border-t-dim',
+    trackBorder: 'border-line',
     features: [
       { name: 'CUDA graphs', desc: 'Pre-compiled execution graphs for 1.3-2x faster inference' },
       { name: 'Maximum GPU utilization', desc: '98% GPU memory utilization for peak performance' },
@@ -44,9 +46,10 @@ const RACERS = {
     icon: '🚀',
     model: 'RedHatAI/Mistral-7B-Instruct-v0.3-quantized.w4a16',
     description: 'Optimized vLLM with W4A16 quantization for efficiency',
-    barGradient: 'from-purple-50 to-purple-30',
-    accentText: 'text-purple-40',
-    trackBorder: 'border-purple-40/50',
+    barGradient: 'from-warning to-proof',
+    accentText: 'text-proof',
+    laneTop: 'border-t-proof',
+    trackBorder: 'border-line',
     featured: true,
     features: [
       { name: 'W4A16 quantization', desc: '4-bit weights, 16-bit activations for 4x memory efficiency' },
@@ -61,7 +64,7 @@ const RACERS = {
 }
 
 const CrownIcon = () => (
-  <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+  <svg className="w-4 h-4 text-proof" fill="currentColor" viewBox="0 0 20 20">
     <path d="M10 3l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1 2-4z" />
   </svg>
 )
@@ -112,21 +115,21 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
     return (
       <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
         <div
-          className={`bg-rh-surface rounded-xl max-w-2xl w-full border ${info.trackBorder} shadow-2xl max-h-[85vh] overflow-y-auto feed`}
+          className={`bg-surface rounded-xl max-w-2xl w-full border border-line shadow-card max-h-[85vh] overflow-y-auto feed`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="p-6 border-b border-white/5 sticky top-0 bg-rh-surface">
+          <div className="p-6 border-b border-line sticky top-0 bg-surface">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="text-4xl">{info.icon}</div>
                 <div>
                   <h3 className="text-2xl font-display font-bold">{info.name}</h3>
-                  <p className="text-rh-text-secondary text-sm mt-0.5">{info.description}</p>
+                  <p className="text-text-2 text-sm mt-0.5">{info.description}</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="text-rh-text-secondary hover:text-white text-2xl leading-none w-8 h-8 flex items-center justify-center rounded hover:bg-rh-elevated transition-all"
+                className="text-text-2 hover:text-text text-2xl leading-none w-8 h-8 flex items-center justify-center rounded hover:bg-surface2 transition-all"
                 aria-label="Close"
               >
                 ×
@@ -136,124 +139,141 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
 
           <div className="p-6 space-y-6">
             <div>
-              <div className="text-xs text-rh-text-tertiary font-mono mb-1.5">Model</div>
-              <div className="text-sm font-mono bg-rh-elevated px-3 py-2.5 rounded-lg border border-white/5 break-all">
+              <div className="font-mono font-bold text-[10px] uppercase tracking-widest text-accent mb-1.5">Model</div>
+              <div className="text-sm font-mono bg-surface2 px-3 py-2.5 rounded-lg border border-line break-all">
                 {info.model}
               </div>
             </div>
 
             <div>
-              <div className="text-xs text-rh-text-tertiary font-mono mb-3">Features and capabilities</div>
+              <div className="font-mono font-bold text-[10px] uppercase tracking-widest text-accent mb-3">Features and capabilities</div>
               <div className="space-y-3">
                 {info.features.map((feature, idx) => (
                   <div key={idx} className="flex gap-3">
-                    <div className={`text-purple-40 mt-0.5 flex-shrink-0 font-bold`}>✓</div>
+                    <div className="text-proof mt-0.5 flex-shrink-0 font-bold">✓</div>
                     <div>
                       <div className="font-semibold text-sm">{feature.name}</div>
-                      <div className="text-sm text-rh-text-secondary">{feature.desc}</div>
+                      <div className="text-sm text-text-2">{feature.desc}</div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-rh-elevated rounded-lg p-4 border border-white/5">
-              <div className="text-xs text-rh-text-tertiary font-mono mb-1">Optimization level</div>
+            <div className="bg-surface2 rounded-lg p-4 border border-line">
+              <div className="font-mono font-bold text-[10px] uppercase tracking-widest text-accent mb-1">Optimization level</div>
               <div className="text-sm">{info.optimizations}</div>
             </div>
           </div>
         </div>
       </div>
-    )
-  }
+  )
+}
 
-  return (
-    <div className="bg-rh-surface rounded-xl border border-white/5 relative overflow-hidden">
-      {/* Red brand accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-[3px] bg-rh-red"></div>
+return (
+  <div className="bg-surface rounded-xl border border-line shadow-card relative overflow-hidden">
+    {/* Red brand accent bar */}
+    <div className="absolute top-0 left-0 right-0 h-[3px] bg-accent"></div>
 
-      {activeInfo && <InfoModal racer={activeInfo} onClose={() => setActiveInfo(null)} />}
+    {activeInfo && <InfoModal racer={activeInfo} onClose={() => setActiveInfo(null)} />}
 
-      <div className="p-4 pt-5">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display font-bold text-lg">Live race</h2>
-          <div className="flex items-center gap-2 font-mono text-[11px] text-rh-text-tertiary">
-            <span className={`w-1.5 h-1.5 rounded-full ${
-              raceState === 'racing' ? 'bg-purple-40 dot-pulse' : raceState === 'finished' ? 'bg-yellow-400' : 'bg-gray-50'
-            }`}></span>
-            {raceState === 'racing' ? 'Streaming tokens' : raceState === 'finished' ? 'Finished' : 'Idle'}
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          {Object.entries(RACERS).map(([key, info]) => {
-            const tokens = tokenMap[key]
-            const isWinner = winner === key
-
-            return (
-              <div
-                key={key}
-                className={`rounded-xl bg-rh-elevated border p-4 transition-all ${
-                  isWinner ? 'border-yellow-400/60 winner-glow' : 'border-white/5'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="text-xl flex-shrink-0">{info.icon}</span>
-                    <div className="flex items-center gap-2 flex-wrap min-w-0">
-                      <span className="font-display font-bold text-[15px]">{info.name}</span>
-                      {info.featured && (
-                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-purple-50/30 text-purple-30 border border-purple-40/40">
-                          Red Hat AI
-                        </span>
-                      )}
-                      <span className="text-[11px] text-rh-text-tertiary font-mono hidden sm:inline">{info.tagline}</span>
-                      <button
-                        onClick={() => setActiveInfo(key)}
-                        className="w-5 h-5 rounded-full bg-rh-deep text-rh-text-tertiary hover:bg-rh-surface hover:text-white flex items-center justify-center text-[10px] transition-all border border-white/10"
-                        title="Learn more"
-                      >
-                        i
-                      </button>
-                      {isWinner && <CrownIcon />}
-                    </div>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <div className={`font-mono font-bold text-lg ${info.accentText}`}>
-                      {getTPS(tokens)} <span className="text-[10px] text-rh-text-tertiary font-normal">tok/s</span>
-                    </div>
-                    <div className="text-[11px] text-rh-text-tertiary font-mono">{tokens.length} tokens</div>
-                  </div>
-                </div>
-
-                {/* Progress bar with data labels */}
-                <div className={`relative h-7 rounded-lg overflow-hidden bg-rh-deep border ${info.trackBorder}`}>
-                  <div
-                    className={`h-full bg-gradient-to-r ${info.barGradient} transition-all duration-300 relative`}
-                    style={{ width: `${progress[key]}%` }}
-                  >
-                    {raceState === 'racing' && <div className="shimmer"></div>}
-                  </div>
-                </div>
-
-                {/* Token feed */}
-                <div className={`bg-rh-deep rounded-lg p-3 h-24 overflow-y-auto feed text-xs font-mono mt-3 border transition-all ${
-                  isWinner ? 'border-yellow-400/60' : 'border-transparent'
-                }`}>
-                  {tokens.map((token, i) => (
-                    <span key={i} className={info.accentText}>{token.token}</span>
-                  ))}
-                  {tokens.length === 0 && (
-                    <span className="text-rh-text-tertiary">Waiting for tokens…</span>
-                  )}
-                </div>
-              </div>
-            )
-          })}
+    <div className="p-4 pt-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-display font-bold text-lg">Live race</h2>
+        <div className="flex items-center gap-2 font-mono font-bold text-[10px] uppercase tracking-widest text-dim">
+          <span className={`w-1.5 h-1.5 rounded-full ${
+            raceState === 'racing' ? 'bg-accent dot-pulse' : raceState === 'finished' ? 'bg-proof' : 'bg-dim'
+          }`}></span>
+          {raceState === 'racing' ? 'Streaming tokens' : raceState === 'finished' ? 'Finished' : 'Idle'}
         </div>
       </div>
+
+      <div className="space-y-3">
+        {Object.entries(RACERS).map(([key, info]) => {
+          const tokens = tokenMap[key]
+          const isWinner = winner === key
+
+          return (
+            <div
+              key={key}
+              className={`rounded-lg bg-surface border border-line border-t-[3px] p-4 transition-all ${info.laneTop} ${
+                isWinner ? 'winner-glow' : ''
+              }`}
+            >
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="text-xl flex-shrink-0">{info.icon}</span>
+                  <div className="flex items-center gap-2 flex-wrap min-w-0">
+                    <span className="font-display font-bold text-[15px]">{info.name}</span>
+                    {info.featured && (
+                      <span className="font-mono font-bold text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-proof/15 text-proof border border-proof/40">
+                        Red Hat AI
+                      </span>
+                    )}
+                    <span className="text-[11px] text-dim font-mono hidden sm:inline">{info.tagline}</span>
+                    <button
+                      onClick={() => setActiveInfo(key)}
+                      className="w-5 h-5 rounded-full bg-surface2 text-text-3 hover:bg-line hover:text-text flex items-center justify-center text-[10px] transition-all border border-line"
+                      title="Learn more"
+                    >
+                      i
+                    </button>
+                    {isWinner && <CrownIcon />}
+                  </div>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <div className={`font-mono font-bold text-lg ${info.accentText}`}>
+                    {getTPS(tokens)} <span className="text-[10px] text-dim font-normal">tok/s</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Lane metrics tiles */}
+              <div className="grid grid-cols-3 gap-1 mb-3">
+                <div className="p-2 bg-surface2 rounded">
+                  <span className="block font-mono font-bold text-[9px] uppercase tracking-widest text-text-3">tok/s</span>
+                  <strong className={`block mt-0.5 font-mono font-bold text-sm ${info.accentText}`}>{getTPS(tokens)}</strong>
+                </div>
+                <div className="p-2 bg-surface2 rounded">
+                  <span className="block font-mono font-bold text-[9px] uppercase tracking-widest text-text-3">Tokens</span>
+                  <strong className="block mt-0.5 font-mono font-bold text-sm text-text">{tokens.length}</strong>
+                </div>
+                <div className="p-2 bg-surface2 rounded">
+                  <span className="block font-mono font-bold text-[9px] uppercase tracking-widest text-text-3">State</span>
+                  <strong className={`block mt-0.5 font-mono font-bold text-sm ${raceState === 'racing' ? 'text-accent' : raceState === 'finished' ? 'text-proof' : 'text-dim'}`}>
+                    {raceState === 'racing' ? 'Streaming' : raceState === 'finished' ? (isWinner ? 'Won' : 'Done') : 'Idle'}
+                  </strong>
+                </div>
+              </div>
+
+              {/* Progress bar with data labels */}
+              <div className={`relative h-7 rounded-lg overflow-hidden bg-surface2 border ${info.trackBorder}`}>
+                <div
+                  className={`h-full bg-gradient-to-r ${info.barGradient} transition-all duration-300 relative`}
+                  style={{ width: `${progress[key]}%` }}
+                >
+                  {raceState === 'racing' && <div className="shimmer"></div>}
+                </div>
+              </div>
+
+              {/* Token feed */}
+              <div className={`bg-surface2 rounded-lg p-3 h-24 overflow-y-auto feed text-xs font-mono mt-3 border transition-all ${
+                isWinner ? 'border-proof/60' : 'border-transparent'
+              }`}>
+                {tokens.map((token, i) => (
+                  <span key={i} className={info.accentText}>{token.token}</span>
+                ))}
+                {tokens.length === 0 && (
+                  <span className="text-dim">Waiting for tokens…</span>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
-  )
+  </div>
+)
 }
 
 export default RaceTrack

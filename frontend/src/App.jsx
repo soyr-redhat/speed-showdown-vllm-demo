@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import RaceTrack from './components/RaceTrack'
 import PromptSelector from './components/PromptSelector'
 import Results from './components/Results'
-import ThemeToggle from './components/ThemeToggle'
+import StackPanel from './components/StackPanel'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -147,42 +147,35 @@ function App() {
   }
 
   const statusDot = raceState === 'racing'
-    ? 'bg-purple-40 dot-pulse'
+    ? 'bg-accent dot-pulse'
     : raceState === 'finished'
-      ? 'bg-yellow-400'
-      : 'bg-gray-50'
+      ? 'bg-proof'
+      : 'bg-dim'
   const statusText = raceState === 'racing'
-    ? 'Racing'
+    ? 'Live'
     : raceState === 'finished'
-      ? 'Race complete'
-      : 'Ready to race'
+      ? 'Complete'
+      : 'Idle'
 
   return (
-    <div className="min-h-screen bg-rh-bg text-rh-text-primary">
-      <div className="grid-background"></div>
+    <div className="min-h-screen bg-bg font-text text-text">
+      <div className="accent-glow"></div>
 
-      <header className="sticky top-0 z-30 bg-rh-surface/95 backdrop-blur border-b border-white/5">
-        <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-30 border-b border-line" style={{ background: 'rgba(31, 31, 31, 0.92)', backdropFilter: 'blur(16px)' }}>
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-rh-red flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M11 3a1 1 0 10-2 0v1.5a1 1 0 102 0V3zM4.4 5.6a1 1 0 011.4 0l1.1 1.1a1 1 0 11-1.4 1.4L4.4 7a1 1 0 010-1.4zM15.6 5.6a1 1 0 010 1.4l-1.1 1.1a1 1 0 11-1.4-1.4l1.1-1.1a1 1 0 011.4 0zM10 7a2 2 0 100 4 2 2 0 000-4zM3 10a1 1 0 011-1h1.5a1 1 0 110 2H4a1 1 0 01-1-1zm11.5-1a1 1 0 110 2H16a1 1 0 110-2h-1.5zM10 13a1 1 0 011 1v1.5a1 1 0 11-2 0V14a1 1 0 011-1z" />
-              </svg>
-            </div>
+            <img src="/redhat.svg" alt="Red Hat" className="h-6 w-auto" />
+            <span className="text-dim font-light text-lg select-none">|</span>
             <div>
-              <h1 className="font-display font-extrabold text-xl leading-tight">
-                <span className="text-rh-red">Speed</span> Showdown
+              <h1 className="font-display font-extrabold text-lg leading-tight tracking-tight">
+                Speed <span className="text-accent">Showdown</span>
               </h1>
-              <p className="text-[11px] text-rh-text-tertiary font-mono">vLLM inference performance demo</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 font-mono text-[11px] text-rh-text-secondary bg-rh-elevated border border-white/5 rounded-full px-3 py-1.5">
-              <span className={`w-2 h-2 rounded-full ${statusDot}`}></span>
-              {statusText}
-            </div>
-            <ThemeToggle />
+          <div className="flex items-center gap-2 font-mono font-bold text-[10px] uppercase tracking-widest text-text-2 bg-surface2 border border-line rounded-full px-3 py-1.5">
+            <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`}></span>
+            {statusText}
           </div>
         </div>
       </header>
@@ -191,14 +184,13 @@ function App() {
         {/* Global win stats */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { key: 'standard', label: 'Standard wins', color: 'text-gray-30' },
-            { key: 'optimized', label: 'Optimized wins', color: 'text-purple-30' },
-            { key: 'quantized', label: 'Quantized wins', color: 'text-purple-40' },
-          ].map(({ key, label, color }) => (
-            <div key={key} className="bg-rh-surface rounded-xl border border-white/5 p-4">
-              <div className="text-[11px] font-semibold text-rh-text-tertiary mb-1">{label}</div>
-              <div className={`font-display font-extrabold text-3xl ${color}`}>{wins[key]}</div>
-              <div className="text-[11px] text-rh-text-tertiary mt-1">global all-time count</div>
+            { key: 'standard', label: 'Standard wins' },
+            { key: 'optimized', label: 'Optimized wins' },
+            { key: 'quantized', label: 'Quantized wins' },
+          ].map(({ key, label }) => (
+            <div key={key} className="bg-surface border border-line rounded-lg p-4 shadow-card">
+              <div className="font-mono font-bold text-[10px] uppercase tracking-widest text-text-3 mb-1.5">{label}</div>
+              <div className="font-mono font-bold text-3xl text-text">{wins[key]}</div>
             </div>
           ))}
         </div>
@@ -218,6 +210,9 @@ function App() {
           <Results results={results} onReset={reset} />
         )}
 
+        {/* Tooling stack */}
+        <StackPanel />
+
         {/* Prompt input */}
         <PromptSelector
           selectedPrompt={selectedPrompt}
@@ -227,10 +222,10 @@ function App() {
         />
       </main>
 
-      <footer className="border-t border-white/5 mt-6 py-4 relative z-10">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-rh-text-tertiary font-mono">
-          <p>Built with open source technologies</p>
+      <footer className="border-t border-line mt-6 py-4 relative z-10">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-widest text-dim">
           <p>Red Hat AI · Four pillars demo</p>
+          <p>vLLM · LLM Compressor · GUIDELLm</p>
         </div>
       </footer>
     </div>

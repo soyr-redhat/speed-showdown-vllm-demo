@@ -19,10 +19,11 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="bg-redhat-dark-elevated border border-redhat-grid-line text-redhat-text-primary hover:bg-redhat-red hover:border-redhat-red hover:text-white px-4 py-2 rounded transition-all font-mono text-xs uppercase tracking-wider flex items-center gap-2 relative z-50"
+      className="bg-rh-elevated border border-white/10 text-rh-text-secondary hover:text-rh-text-primary hover:border-purple-40/60 px-3 py-2 rounded-lg transition-all font-mono text-[11px] flex items-center gap-1.5"
+      title="Toggle theme"
     >
       <span>{theme === 'dark' ? '☀' : '☾'}</span>
-      <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
+      <span className="hidden sm:inline">{theme === 'dark' ? 'Light' : 'Dark'}</span>
     </button>
   )
 }

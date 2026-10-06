@@ -1,31 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@700;900&family=Red+Hat+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@700;900&family=Red+Hat+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;600;700;800&family=Red+Hat+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg-primary: #0A0A0A;
+  --bg-primary: #0a0a0a;
   --bg-surface: #151515;
-  --bg-elevated: #1F1F1F;
-  --text-primary: #FFFFFF;
-  --text-secondary: #B8B8B8;
-  --text-tertiary: #6B6B6B;
-  --grid-opacity: 0.08;
-  --grid-opacity-bright: 0.2;
+  --bg-elevated: #1f1f1f;
+  --bg-deep: #0f0f0f;
+  --text-primary: #ffffff;
+  --text-secondary: #b8b8b8;
+  --text-tertiary: #6b6b6b;
+  --line: rgba(255, 255, 255, 0.06);
 }
 
 [data-theme="light"] {
-  --bg-primary: #F5F5F5;
-  --bg-surface: #FFFFFF;
-  --bg-elevated: #FAFAFA;
-  --text-primary: #1A1A1A;
-  --text-secondary: #4A4A4A;
-  --text-tertiary: #8A8A8A;
-  --grid-opacity: 0.15;
-  --grid-opacity-bright: 0.3;
+  --bg-primary: #f2f2f2;
+  --bg-surface: #ffffff;
+  --bg-elevated: #fafafa;
+  --bg-deep: #e0e0e0;
+  --text-primary: #151515;
+  --text-secondary: #4d4d4d;
+  --text-tertiary: #707070;
+  --line: rgba(0, 0, 0, 0.08);
 }
 
 body {
@@ -41,7 +39,7 @@ code {
   font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Red Hat Brand Grid Background */
+/* Subtle grid backdrop with red accent glow at top */
 .grid-background {
   position: fixed;
   top: 0;
@@ -49,9 +47,9 @@ code {
   width: 100%;
   height: 100%;
   background-image:
-    linear-gradient(rgba(238, 0, 0, var(--grid-opacity)) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(238, 0, 0, var(--grid-opacity)) 1px, transparent 1px);
-  background-size: 50px 50px;
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 56px 56px;
   pointer-events: none;
   z-index: 0;
 }
@@ -63,7 +61,52 @@ code {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 50% 0%, rgba(238, 0, 0, calc(var(--grid-opacity) / 2)), transparent 70%);
+  background: radial-gradient(circle at 50% -12%, rgba(238, 0, 0, 0.14), transparent 55%);
 }
 
-/* Removed scan line for demo apps - kept only in landing page */
+/* Bar shimmer while racing */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  animation: shimmer 1.6s infinite;
+}
+
+/* Winner glow */
+@keyframes winner-glow {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.7), 0 0 18px rgba(250, 204, 21, 0.25); }
+  50% { box-shadow: 0 0 0 1px rgba(250, 204, 21, 1), 0 0 30px rgba(250, 204, 21, 0.45); }
+}
+
+.winner-glow {
+  animation: winner-glow 1.4s ease-in-out infinite;
+}
+
+/* Racing status dot */
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.dot-pulse {
+  animation: dot-pulse 1s ease-in-out infinite;
+}
+
+/* Smooth scrollbar styling for token feeds */
+.feed::-webkit-scrollbar {
+  width: 6px;
+}
+
+.feed::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feed::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.3);
+  border-radius: 3px;
+}

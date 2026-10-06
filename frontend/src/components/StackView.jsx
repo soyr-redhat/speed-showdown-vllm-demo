@@ -14,7 +14,7 @@ const STACK = [
     url: 'https://github.com/vllm-project/llm-compressor',
   },
   {
-    name: 'GUIDELLm',
+    name: 'GuideLLM',
     role: 'Benchmark',
     desc: 'Measures throughput and latency across the configs at scale. Benchmarks generative AI workloads against vLLM endpoints and produces the numbers that decide which deployment wins.',
     points: ['Throughput and latency sweeps', 'Configurable workloads', 'Statistical analysis', 'vLLM endpoint support'],

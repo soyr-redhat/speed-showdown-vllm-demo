@@ -149,15 +149,6 @@ function App() {
     }
   }
 
-  const reset = () => {
-    setRaceState('idle')
-    setStandardTokens([])
-    setOptimizedTokens([])
-    setQuantizedTokens([])
-    setResults(null)
-    setWinner(null)
-  }
-
   const statusDot = raceState === 'racing'
     ? 'bg-accent dot-pulse'
     : raceState === 'finished'
@@ -220,7 +211,7 @@ function App() {
         <main className="flex-1 min-h-0 flex flex-col gap-3 p-3 overflow-y-auto lg:overflow-hidden">
           {/* Results banner after a race */}
           {raceState === 'finished' && results && (
-            <Results results={results} onReset={reset} />
+            <Results results={results} />
           )}
 
           {/* Lanes fill the stage */}

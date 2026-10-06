@@ -4,7 +4,7 @@ const RACER_STYLES = {
   quantized: { name: 'Quantized', color: 'text-proof' },
 }
 
-function Results({ results, onReset }) {
+function Results({ results }) {
   const fmtTime = (t) => (!isFinite(t) ? 'DNF' : `${t.toFixed(3)}s`)
 
   const ranked = [
@@ -45,13 +45,6 @@ function Results({ results, onReset }) {
         </span>
         <span className="text-[10px] text-dim font-mono hidden lg:inline">vs standard</span>
       </div>
-
-      <button
-        onClick={onReset}
-        className="ml-auto bg-accent text-white px-4 py-1.5 rounded-md font-display font-bold text-xs hover:bg-accent-deep transition-all"
-      >
-        Race again
-      </button>
     </div>
   )
 }

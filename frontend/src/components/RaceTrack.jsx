@@ -205,6 +205,7 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
               </div>
               <div className={`font-mono font-bold text-base ${info.accentText} flex-shrink-0`}>
                 {getTPS(tokens)} <span className="text-[9px] text-dim font-normal">tok/s</span>
+                <span className="text-dim font-normal"> · {tokens.length} tok</span>
               </div>
             </div>
 
@@ -218,33 +219,15 @@ function RaceTrack({ standardTokens, optimizedTokens, quantizedTokens, raceState
               </div>
             </div>
 
-            {/* Lane metrics */}
-            <div className="grid grid-cols-3 gap-1 mt-2 mb-2">
-              <div className="px-2 py-1.5 bg-surface2 rounded">
-                <span className="block font-mono font-bold text-[8px] uppercase tracking-widest text-text-3">Tokens</span>
-                <strong className="block font-mono font-bold text-xs text-text">{tokens.length}</strong>
-              </div>
-              <div className="px-2 py-1.5 bg-surface2 rounded">
-                <span className="block font-mono font-bold text-[8px] uppercase tracking-widest text-text-3">State</span>
-                <strong className={`block font-mono font-bold text-xs ${raceState === 'racing' ? 'text-accent' : raceState === 'finished' ? (isWinner ? 'text-proof' : 'text-text-2') : 'text-dim'}`}>
-                  {raceState === 'racing' ? 'Streaming' : raceState === 'finished' ? (isWinner ? 'Won' : 'Done') : 'Idle'}
-                </strong>
-              </div>
-              <div className="px-2 py-1.5 bg-surface2 rounded">
-                <span className="block font-mono font-bold text-[8px] uppercase tracking-widest text-text-3">Lead</span>
-                <strong className="block font-mono font-bold text-xs text-text">{Math.round(progress[key])}%</strong>
-              </div>
-            </div>
-
             {/* Token feed fills remaining lane height */}
-            <div className={`flex-1 min-h-0 bg-surface2 rounded-md p-2.5 overflow-y-auto feed text-xs font-mono border transition-all ${
+            <div className={`flex-1 min-h-0 bg-surface2 rounded-md p-2.5 overflow-y-auto feed text-xs font-mono mt-2.5 border transition-all ${
               isWinner ? 'border-proof/60' : 'border-transparent'
             }`}>
               {tokens.map((token, i) => (
-                <span key={i} className={info.accentText}>{token.token}</span>
+                <span key={i} className={`token-in ${info.accentText}`}>{token.token}</span>
               ))}
               {tokens.length === 0 && (
-                <span className="text-dim">Waiting for tokens…</span>
+                <span className="text-dim">{raceState === 'racing' ? 'Warming up…' : 'Press Start race to begin'}</span>
               )}
             </div>
           </div>

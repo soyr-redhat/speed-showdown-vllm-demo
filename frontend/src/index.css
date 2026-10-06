@@ -62,6 +62,26 @@ body {
   animation: dot-pulse 1s ease-in-out infinite;
 }
 
+/* New tokens fade in as they stream */
+@keyframes token-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.token-in {
+  animation: token-in 0.25s ease-out;
+}
+
+/* Sample dropdown */
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.menu-in {
+  animation: menu-in 0.15s ease-out;
+}
+
 /* Token feed scrollbars */
 .feed::-webkit-scrollbar {
   width: 6px;
